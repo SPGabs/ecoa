@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="pt" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ecoa — escreve ao ritmo de qualquer vídeo</title>
+<meta name="description" content="Pratica escrita e compreensão oral escrevendo as legendas de vídeos do YouTube. Grátis e sem conta.">
+<meta name="theme-color" content="#3B4BD8">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta property="og:title" content="Ecoa — escreve ao ritmo de qualquer vídeo">
+<meta property="og:description" content="Pratica escrita e compreensão oral com as legendas de vídeos do YouTube. Grátis e sem conta.">
+<meta property="og:image" content="/icons/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..900,0..1,0..1,0..1&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens ---------- */
+:root{
+  --bg:#EEF0FA; --surface:#FFFFFF; --sunk:#E3E6F5; --ink:#1D2346; --muted:#6A7099; --line:#D6DAEE;
+  --accent:#3B4BD8; --accent-ink:#FFFFFF; --ok:#1F9D74; --bad:#E5484D; --marker:#FFE27A;
+  --shadow:0 1px 2px rgba(29,35,70,.06),0 8px 24px rgba(29,35,70,.08);
+  --r-lg:20px; --r-md:14px; --r-sm:10px;
+}
+[data-theme="dark"]{
+  --bg:#141833; --surface:#1D2246; --sunk:#171B3B; --ink:#E9ECFA; --muted:#9AA0C7; --line:#2E3463;
+  --accent:#8E9BFF; --accent-ink:#141833; --ok:#4FD1A5; --bad:#FF7A7F; --marker:#FFE27A;
+  --shadow:0 1px 2px rgba(0,0,0,.2),0 10px 30px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Recursive",system-ui,sans-serif;
+  font-variation-settings:"CASL" 0,"MONO" 0;font-size:16px;line-height:1.55;transition:background .25s,color .25s}
+.casual{font-variation-settings:"CASL" 1,"MONO" 0}
+.mono{font-variation-settings:"MONO" 1,"CASL" 0}
+.demo,.line,textarea,kbd,.tlist time{font-family:"Recursive",ui-monospace,Menlo,Consolas,monospace}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* ---------- Barra superior ---------- */
+.top{display:flex;align-items:center;gap:16px;padding:14px clamp(16px,4vw,40px);position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px)}
+.logo{display:flex;align-items:center;gap:10px;font-size:1.45rem;font-weight:850;letter-spacing:-.02em;
+  font-variation-settings:"CASL" 1;background:none;border:0;padding:0;cursor:pointer}
+.logo svg{width:30px;height:30px}
+.top nav{margin-left:auto;display:flex;gap:6px;align-items:center}
+.ghost{background:none;border:0;padding:8px 12px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:550}
+.ghost:hover{color:var(--ink);background:var(--sunk)}
+.icon-btn{width:40px;height:40px;display:grid;place-items:center;padding:0}
+.icon-btn svg{width:20px;height:20px}
+
+/* ---------- Botões ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 20px;border:1.5px solid var(--line);
+  background:var(--surface);cursor:pointer;font-weight:600;transition:border-color .15s,transform .1s}
+.btn:hover{border-color:var(--accent)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.small{padding:7px 14px;font-size:.9rem}
+.btn svg{width:18px;height:18px}
+
+/* ---------- Página inicial ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,40px) 60px}
+.hero{padding:clamp(28px,6vw,72px) 0 clamp(24px,4vw,44px);display:grid;gap:22px;max-width:760px}
+.hero h1{margin:0;font-size:clamp(2.3rem,6vw,4.2rem);line-height:1.02;letter-spacing:-.035em;font-weight:850;
+  font-variation-settings:"CASL" 1}
+.hero p{margin:0;color:var(--muted);font-size:1.12rem;max-width:58ch}
+.demo{font-variation-settings:"MONO" 1;font-size:clamp(1.05rem,2.4vw,1.4rem);background:var(--surface);
+  border-radius:var(--r-md);padding:16px 20px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:center;width:fit-content;max-width:100%}
+.demo .ts{color:var(--muted);font-size:.8em}
+.demo span.t{color:var(--muted)}
+.demo span.t.ok{color:var(--ink)}
+.demo span.t.cur{background:var(--marker);color:#1D2346;border-radius:3px}
+
+.grid-home{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:900px){.grid-home{grid-template-columns:1fr}}
+.panel{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:clamp(18px,3vw,28px)}
+.panel h2{margin:0 0 4px;font-size:1.35rem;letter-spacing:-.015em;font-variation-settings:"CASL" 1;font-weight:750}
+.panel .sub{margin:0 0 18px;color:var(--muted)}
+.step{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:16px 0;border-top:1px solid var(--line)}
+.step:first-of-type{border-top:0}
+.step .n{width:30px;height:30px;border-radius:50%;background:var(--sunk);display:grid;place-items:center;font-weight:750;font-size:.9rem}
+.step h3{margin:3px 0 10px;font-size:1rem;font-weight:650}
+.field{display:block;margin-bottom:10px}
+.field span{display:block;font-size:.88rem;color:var(--muted);margin-bottom:5px}
+.input,textarea{width:100%;background:var(--sunk);border:1.5px solid transparent;border-radius:var(--r-sm);padding:11px 13px;transition:border-color .15s}
+.input:focus,textarea:focus{border-color:var(--accent);outline:none}
+textarea{min-height:120px;resize:vertical;font-variation-settings:"MONO" 1;font-size:.85rem;line-height:1.5}
+.seg{display:inline-flex;background:var(--sunk);border-radius:999px;padding:4px;gap:2px;margin-bottom:12px}
+.seg button{border:0;background:none;padding:7px 14px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:600;font-size:.92rem}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(29,35,70,.15)}
+.filebtn{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.filebtn input{position:absolute;opacity:0;width:1px;height:1px}
+.filename{color:var(--muted);font-size:.88rem;margin-left:8px}
+details.help{margin-top:8px;font-size:.92rem}
+details.help summary{cursor:pointer;color:var(--accent);font-weight:600}
+details.help ol{margin:8px 0 0;padding-left:20px;color:var(--muted)}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:560px){.modes{grid-template-columns:1fr}}
+.mode-card{position:relative;border:1.5px solid var(--line);border-radius:var(--r-md);padding:12px 14px;cursor:pointer;display:block}
+.mode-card input{position:absolute;opacity:0}
+.mode-card b{display:block;font-size:.98rem}
+.mode-card small{color:var(--muted);font-size:.83rem;line-height:1.35;display:block;margin-top:2px}
+.mode-card:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.mode-card:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.err{color:var(--bad);min-height:1.4em;margin:10px 0 0;font-size:.93rem}
+.hint{color:var(--muted);font-size:.88rem;margin:6px 0 0}
+
+/* Biblioteca */
+.lib-list{display:grid;gap:12px}
+.lib-item{display:grid;grid-template-columns:132px 1fr;gap:14px;align-items:center;padding:10px;border-radius:var(--r-md);background:var(--sunk);cursor:pointer;border:1.5px solid transparent;text-align:left;width:100%}
+.lib-item:hover{border-color:var(--accent)}
+.thumb{width:132px;aspect-ratio:16/9;border-radius:var(--r-sm);background:var(--line) center/cover;position:relative;overflow:hidden}
+.thumb .badge{position:absolute;left:6px;bottom:6px;background:var(--ok);color:#fff;font-size:.72rem;font-weight:700;padding:2px 7px;border-radius:999px}
+.lib-item h4{margin:0 0 4px;font-size:.98rem;font-weight:650;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;flex-wrap:wrap;gap:6px;font-size:.8rem;color:var(--muted)}
+.meta span{background:var(--surface);padding:1px 8px;border-radius:999px}
+.pbar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:8px}
+.pbar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.lib-actions{display:flex;justify-content:flex-end;margin-top:6px}
+.del{background:none;border:0;color:var(--muted);font-size:.8rem;cursor:pointer;padding:2px 6px;border-radius:6px}
+.del:hover{color:var(--bad)}
+.empty{border:2px dashed var(--line);border-radius:var(--r-md);padding:28px;text-align:center;color:var(--muted)}
+.foot{margin-top:40px;color:var(--muted);font-size:.88rem}
+
+/* ---------- Leitor / prática ---------- */
+.ptop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 16px}
+.ptop h2{margin:0;font-size:1.15rem;font-weight:700;flex:1;min-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start}
+@media (max-width:980px){.pgrid{grid-template-columns:1fr}}
+.stage{position:relative;aspect-ratio:16/9;background:#000;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow)}
+.stage iframe,.stage video,#stageHost>div{position:absolute;inset:0;width:100%;height:100%;border:0}
+.overlay{position:absolute;left:0;right:0;bottom:58px;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;padding:0 6%;text-align:center}
+.overlay span{background:rgba(10,12,30,.78);color:#fff;padding:3px 10px;border-radius:6px;font-size:clamp(.85rem,2vw,1.15rem);line-height:1.35}
+.overlay span.tr{color:var(--marker);font-size:clamp(.78rem,1.7vw,1rem)}
+
+.typebox{margin-top:18px;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:clamp(16px,3vw,26px);position:relative}
+.line{position:relative;font-variation-settings:"MONO" 1;font-size:clamp(1.2rem,2.6vw,1.75rem);line-height:1.75;min-height:3.5em;cursor:text;
+  border-radius:var(--r-md);padding:12px 14px;background:var(--sunk);transition:box-shadow .15s}
+.line.focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 45%,transparent)}
+.line .w{white-space:nowrap}
+.line span span,.line > span{transition:color .08s}
+.line .todo{color:var(--muted)}
+.line .ok{color:var(--ink)}
+.line .bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,transparent);border-radius:3px;text-decoration:line-through;text-decoration-thickness:1px}
+.line .blank{color:transparent;border-bottom:2px solid var(--line)}
+.line .cur{background:var(--marker);color:#1D2346;border-radius:3px;border-bottom-color:transparent}
+.line .cur.blank{color:transparent}
+.line .endcur{display:inline-block;width:.6em;height:1.1em;vertical-align:-0.15em;background:var(--marker);border-radius:2px}
+.line.solved{box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 60%,transparent)}
+.linewrap{position:relative}
+#typing{position:absolute;inset:0;opacity:0;width:100%;height:100%;font-size:16px;border:0;cursor:text}
+.trline{margin:10px 2px 0;color:var(--muted);font-size:.98rem;min-height:1.4em}
+.prow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.prow .sp{flex:1}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.stat{background:var(--sunk);border-radius:var(--r-md);padding:10px 14px}
+.stat b{display:block;font-size:1.55rem;font-weight:800;letter-spacing:-.02em;font-variation-settings:"CASL" 1;line-height:1.2}
+.stat small{color:var(--muted);font-size:.82rem}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
+.keys{color:var(--muted);font-size:.84rem;margin-top:12px}
+kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px}
+
+/* Transcrição */
+.side{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);display:flex;flex-direction:column;max-height:calc(100vh - 120px);position:sticky;top:84px}
+@media (max-width:980px){.side{position:static;max-height:420px}}
+.side header{padding:16px 18px 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.side header h3{margin:0;font-size:1rem;font-weight:700}
+.side header small{color:var(--muted)}
+.tlist{list-style:none;margin:0;padding:0 8px 12px;overflow-y:auto;position:relative}
+.tlist li{display:grid;grid-template-columns:44px 1fr;gap:8px;padding:8px 10px;border-radius:var(--r-sm);cursor:pointer;font-size:.93rem;line-height:1.4}
+.tlist li:hover{background:var(--sunk)}
+.tlist li time{color:var(--muted);font-variation-settings:"MONO" 1;font-size:.76rem;padding-top:2px}
+.tlist li .tx{color:var(--muted)}
+.tlist li.done .tx{color:var(--ink)}
+.tlist li.done time::after{content:" ✓";color:var(--ok)}
+.tlist li.active{background:color-mix(in srgb,var(--accent) 12%,var(--surface))}
+.tlist li.active .tx{color:var(--ink);font-weight:600}
+.tlist li .tt{display:block;color:var(--muted);font-size:.85rem;margin-top:2px}
+.tlist.hide li:not(.done) .tx,.tlist.hide li:not(.done) .tt{filter:blur(5px);user-select:none}
+.tlist.watch li .tx{color:var(--ink)}
+
+/* Definições */
+.settings{position:relative}
+.settings summary{list-style:none}
+.settings summary::-webkit-details-marker{display:none}
+.menu{position:absolute;right:0;top:calc(100% + 8px);background:var(--surface);border-radius:var(--r-md);box-shadow:var(--shadow);padding:14px;width:260px;z-index:30;border:1px solid var(--line);display:grid;gap:10px}
+.menu label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.92rem}
+.menu select{background:var(--sunk);border:0;border-radius:8px;padding:6px 8px}
+.toggle{appearance:none;width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;flex:none;transition:background .15s}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s}
+.toggle:checked{background:var(--accent)}
+.toggle:checked::after{transform:translateX(16px)}
+
+/* Conclusão */
+.modal{position:fixed;inset:0;background:rgba(14,17,40,.55);display:grid;place-items:center;z-index:50;padding:20px}
+.modal .panel{max-width:440px;width:100%;text-align:center}
+.modal .big{display:flex;justify-content:center;gap:28px;margin:18px 0}
+.modal .big b{display:block;font-size:2.4rem;font-weight:850;font-variation-settings:"CASL" 1;line-height:1.1}
+.modal .big small{color:var(--muted)}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:999px;z-index:60;font-size:.93rem;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <button class="logo" id="logo" aria-label="Ecoa — página inicial">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="6" width="28" height="20" rx="6" fill="var(--accent)"/><rect x="7" y="17" width="9" height="3" rx="1.5" fill="var(--marker)"/><rect x="18" y="17" width="7" height="3" rx="1.5" fill="#fff" opacity=".8"/><path d="M13 10.5v4l3.5-2z" fill="#fff"/></svg>
+    ecoa
+  </button>
+  <nav>
+    <button class="ghost" id="navLib">Biblioteca</button>
+    <button class="ghost icon-btn" id="themeBtn" aria-label="Mudar tema claro/escuro">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </nav>
+</div>
+
+<!-- ================= INÍCIO ================= -->
+<main class="wrap" id="home">
+  <section class="hero">
+    <h1>Escreve o que ouves, frase a frase.</h1>
+    <p>Junta um vídeo do YouTube e as legendas dele. O vídeo para no fim de cada frase até a escreveres. Treinas a escrita e o ouvido ao mesmo tempo, de graça e sem conta.</p>
+    <div class="demo" aria-hidden="true"><span class="ts">0:14</span><span id="demoLine"></span></div>
+  </section>
+
+  <div class="grid-home">
+    <section class="panel" aria-labelledby="impTitle">
+      <h2 id="impTitle">Novo vídeo</h2>
+      <p class="sub">Três passos e começas a praticar.</p>
+
+      <div class="step">
+        <div class="n">1</div>
+        <div>
+          <h3>Escolhe o vídeo</h3>
+          <div class="seg" role="group" aria-label="Origem do vídeo">
+            <button type="button" id="srcYtBtn" aria-pressed="true">YouTube</button>
+            <button type="button" id="srcFileBtn" aria-pressed="false">Ficheiro do computador</button>
+          </div>
+          <div id="srcYt">
+            <label class="field"><span>Link do vídeo</span>
+              <input class="input" id="ytUrl" type="url" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off"></label>
+            <p class="hint" id="fileProto" hidden>Abriste a página como ficheiro. Se o vídeo não reproduzir, abre-a através de um servidor (por exemplo, GitHub Pages).</p>
+          </div>
+          <div id="srcFile" hidden>
+            <label class="btn small filebtn"><input type="file" id="vidFile" accept="video/*">Escolher vídeo</label>
+            <span class="filename" id="vidName"></span>
+            <p class="hint">Vídeos do computador não ficam na biblioteca.</p>
+          </div>
+          <label class="field" style="margin-top:6px"><span>Nome (opcional)</span>
+            <input class="input" id="title" type="text" placeholder="Ex.: Palestra TED sobre o sono"></label>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="n">2</div>
+        <div>
+          <h3>Junta as legendas</h3>
+          <label class="btn small filebtn"><input type="file" id="subFile" accept=".srt,.vtt,.txt,text/vtt,text/plain">Carregar .srt ou .vtt</label>
+          <span class="filename" id="subName"></span>
+          <label class="field" style="margin-top:12px"><span>Ou cola as legendas ou a transcrição do YouTube</span>
+            <textarea id="subText" placeholder="0:00&#10;Hello everyone and welcome back&#10;0:04&#10;today we're talking about sleep"></textarea></label>
+          <details class="help">
+            <summary>Como copiar a transcrição do YouTube</summary>
+            <ol>
+              <li>Abre o vídeo no YouTube, no computador.</li>
+              <li>Na descrição, carrega em <b>Mostrar transcrição</b>.</li>
+              <li>Seleciona o texto todo do painel, copia e cola aqui.</li>
+            </ol>
+          </details>
+          <details class="help">
+            <summary>Adicionar tradução (legendas duplas)</summary>
+            <div style="margin-top:10px">
+              <label class="btn small filebtn"><input type="file" id="trFile" accept=".srt,.vtt,.txt,text/vtt,text/plain">Carregar tradução</label>
+              <span class="filename" id="trName"></span>
+              <label class="field" style="margin-top:10px"><span>Ou cola as legendas na tua língua</span>
+                <textarea id="trText" style="min-height:80px"></textarea></label>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="n">3</div>
+        <div>
+          <h3>Escolhe como praticar</h3>
+          <div class="modes" role="radiogroup" aria-label="Modo de prática">
+            <label class="mode-card"><input type="radio" name="mode" value="type" checked><b>Escrever junto</b><small>Vês a frase e escreves. O vídeo espera por ti.</small></label>
+            <label class="mode-card"><input type="radio" name="mode" value="dict"><b>Ditado</b><small>Legendas escondidas. Escreves só o que ouves, com dicas.</small></label>
+            <label class="mode-card"><input type="radio" name="mode" value="watch"><b>Ver</b><small>Vídeo seguido, legendas duplas e transcrição clicável.</small></label>
+          </div>
+          <div class="prow" style="margin-top:18px">
+            <button class="btn primary" id="startBtn">Começar a praticar</button>
+            <button class="btn" id="demoBtn" type="button">Experimentar com exemplo</button>
+          </div>
+          <p class="err" id="err" role="alert"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="libPanel" aria-labelledby="libTitle">
+      <h2 id="libTitle">A tua biblioteca</h2>
+      <p class="sub">Os vídeos guardam-se neste browser. Podes repeti-los sempre que quiseres.</p>
+      <div class="lib-list" id="libList"></div>
+    </section>
+  </div>
+
+  <p class="foot">O ecoa não guarda nada num servidor: os vídeos, as legendas e o progresso ficam só neste browser.</p>
+</main>
+
+<!-- ================= PRÁTICA ================= -->
+<main class="wrap" id="player" hidden>
+  <div class="ptop">
+    <button class="btn small" id="backBtn">← Biblioteca</button>
+    <h2 id="pTitle"></h2>
+    <div class="seg" role="group" aria-label="Modo" style="margin:0">
+      <button type="button" data-mode="type">Escrever junto</button>
+      <button type="button" data-mode="dict">Ditado</button>
+      <button type="button" data-mode="watch">Ver</button>
+    </div>
+    <details class="settings" id="settings">
+      <summary class="btn small" aria-label="Definições">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+        Definições
+      </summary>
+      <div class="menu">
+        <label>Velocidade do vídeo
+          <select id="sSpeed"><option value="0.5">0,5×</option><option value="0.75">0,75×</option><option value="1" selected>1×</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option></select></label>
+        <label>Pausar em cada frase <input type="checkbox" class="toggle" id="sPause"></label>
+        <label>Ignorar maiúsculas <input type="checkbox" class="toggle" id="sCase"></label>
+        <label>Ignorar pontuação <input type="checkbox" class="toggle" id="sPunct"></label>
+        <label>Mostrar tradução <input type="checkbox" class="toggle" id="sTrans"></label>
+        <label>Repetir frase em ciclo <input type="checkbox" class="toggle" id="sLoop"></label>
+      </div>
+    </details>
+  </div>
+
+  <div class="pgrid">
+    <div>
+      <div class="stage">
+        <div id="stageHost"></div>
+        <div class="overlay" id="overlay"></div>
+      </div>
+
+      <section class="typebox" id="typebox">
+        <div class="linewrap">
+          <div class="line" id="line" aria-live="polite"></div>
+          <input id="typing" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Escreve a frase">
+        </div>
+        <p class="trline" id="trLine"></p>
+        <div class="prow">
+          <button class="btn small" id="prevBtn" aria-label="Frase anterior">◀</button>
+          <button class="btn small primary" id="replayBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Ouvir frase</button>
+          <button class="btn small" id="hintBtn">Dica</button>
+          <button class="btn small" id="nextBtn" aria-label="Saltar frase">▶</button>
+          <span class="sp"></span>
+        </div>
+        <div class="stats">
+          <div class="stat"><small>Palavras/min</small><b id="stWpm">0</b></div>
+          <div class="stat"><small>Precisão</small><b id="stAcc">100%</b></div>
+          <div class="stat"><small>Dicas usadas</small><b id="stHints">0</b></div>
+          <div class="stat"><small>Progresso</small><b id="stProg">0%</b></div>
+        </div>
+        <p class="keys"><kbd>Esc</kbd> ouvir de novo &nbsp; <kbd>Tab</kbd> dica de uma letra &nbsp; <kbd>Shift</kbd>+<kbd>Tab</kbd> revelar palavra &nbsp; <kbd>Ctrl</kbd>+<kbd>←</kbd>/<kbd>→</kbd> mudar de frase</p>
+      </section>
+    </div>
+
+    <aside class="side" aria-labelledby="trTitle">
+      <header><h3 id="trTitle">Transcrição</h3><small id="trCount"></small></header>
+      <ol class="tlist" id="tlist"></ol>
+    </aside>
+  </div>
+</main>
+
+<div class="modal" id="doneModal" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="doneTitle">
+    <h2 id="doneTitle">Vídeo concluído</h2>
+    <p class="sub" id="doneSub"></p>
+    <div class="big">
+      <div><b id="dWpm">0</b><small>palavras/min</small></div>
+      <div><b id="dAcc">0%</b><small>precisão</small></div>
+    </div>
+    <div class="prow" style="justify-content:center">
+      <button class="btn primary" id="againBtn">Praticar de novo</button>
+      <button class="btn" id="doneLibBtn">Voltar à biblioteca</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* ============ Armazenamento local ============ */
+const store = {
+  get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){ toast('Não foi possível guardar neste browser.'); } }
+};
+let settings = Object.assign({ speed:1, pause:true, ic:true, ip:false, trans:true, loop:false, theme:null, mode:'type' }, store.get('ecoa.settings', {}));
+let lib = store.get('ecoa.lib', []);
+const saveSettings = () => store.set('ecoa.settings', settings);
+const saveLib = () => store.set('ecoa.lib', lib);
+
+/* ============ Tema ============ */
+function applyTheme(){
+  const t = settings.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.dataset.theme = t;
+}
+applyTheme();
+$('themeBtn').onclick = () => {
+  settings.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  saveSettings(); applyTheme();
+};
+
+/* ============ Toast ============ */
+let toastT;
+function toast(msg){
+  const t = $('toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3800);
+}
+
+/* ============ Animação do topo ============ */
+(function demo(){
+  const text = "Tell me what you hear.";
+  const box = $('demoLine');
+  const spans = [...text].map(ch => { const s = document.createElement('span'); s.className = 't'; s.textContent = ch; box.appendChild(s); return s; });
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches){
+    spans.forEach((s,i) => s.classList.add(i < 12 ? 'ok' : 't')); spans[12].classList.add('cur'); return;
+  }
+  let i = 0;
+  setInterval(() => {
+    spans.forEach((s,j) => { s.classList.toggle('ok', j < i); s.classList.toggle('cur', j === i); });
+    i = i > text.length + 8 ? 0 : i + 1;
+  }, 140);
+})();
+
+/* ============ Legendas ============ */
+function parseTime(s){
+  s = s.trim().replace(',', '.'); let t = 0;
+  for (const p of s.split(':')) t = t * 60 + parseFloat(p);
+  return t;
+}
+function cleanText(s){
+  return s.replace(/<[^>]+>/g,'').replace(/\{[^}]*\}/g,'')
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ')
+    .replace(/&#39;|&apos;/g,"'").replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
+}
+function parseSrtVtt(txt){
+  const out = [];
+  for (const block of txt.split(/\n\s*\n/)){
+    const lines = block.split('\n');
+    const i = lines.findIndex(l => l.includes('-->'));
+    if (i < 0) continue;
+    const [a, b] = lines[i].split('-->');
+    const start = parseTime(a), end = parseTime(b.trim().split(/\s+/)[0]);
+    const text = cleanText(lines.slice(i + 1).join(' '));
+    if (text && !isNaN(start) && !isNaN(end)) out.push({ start, end, text });
+  }
+  out.sort((x, y) => x.start - y.start);
+  const res = [];   // limpa legendas automáticas "a rolar" do YouTube
+  for (const c of out){
+    const prev = res[res.length - 1];
+    if (prev){
+      if (c.text === prev.text){ prev.end = Math.max(prev.end, c.end); continue; }
+      if (c.text.startsWith(prev.text + ' ')) c.text = c.text.slice(prev.text.length + 1);
+    }
+    res.push(c);
+  }
+  return res;
+}
+function parseTimestamped(txt){
+  const re = /^\[?((?:\d{1,2}:)?\d{1,2}:\d{2}(?:[.,]\d+)?)\]?\s*(.*)$/;
+  const out = []; let cur = null;
+  for (let l of txt.split('\n')){
+    l = l.trim(); if (!l) continue;
+    if (/^\d+\s+(seconds?|minutes?|hours?|segundos?|minutos?|horas?)\b/i.test(l)) continue;
+    const m = l.match(re);
+    if (m){ cur = { start: parseTime(m[1]), text: m[2] || '' }; out.push(cur); }
+    else if (cur) cur.text += (cur.text ? ' ' : '') + l;
+  }
+  out.forEach((c, i) => { c.end = out[i + 1] ? out[i + 1].start : c.start + 4; c.text = cleanText(c.text); });
+  return out.filter(c => c.text);
+}
+function parseAny(txt){
+  txt = (txt || '').replace(/^﻿/, '').replace(/\r/g, '');
+  return txt.includes('-->') ? parseSrtVtt(txt) : parseTimestamped(txt);
+}
+function attachTranslation(cues, tr){
+  if (!tr.length) return;
+  for (const c of cues){
+    let best = null, bestOv = 0;
+    for (const t of tr){
+      if (t.start > c.end) break;
+      const ov = Math.min(c.end, t.end) - Math.max(c.start, t.start);
+      if (ov > bestOv){ bestOv = ov; best = t; }
+    }
+    if (best) c.trans = best.text;
+  }
+}
+
+/* ============ Normalização ============ */
+const basic = s => s.replace(/[‘’ʼ`´]/g,"'").replace(/[“”«»„]/g,'"').replace(/[–—]/g,'-').replace(/…/g,'...').replace(/ /g,' ');
+function normTarget(s){
+  s = basic(s);
+  if (settings.ip) s = s.replace(/[^\p{L}\p{N}\s]/gu, '');
+  s = s.replace(/\s+/g, ' ').trim();
+  return settings.ic ? s.toLowerCase() : s;
+}
+function normTyped(s){ s = basic(s); return settings.ic ? s.toLowerCase() : s; }
+
+/* ============ Página inicial ============ */
+let source = 'yt';
+function setSource(s){
+  source = s;
+  $('srcYtBtn').setAttribute('aria-pressed', s === 'yt');
+  $('srcFileBtn').setAttribute('aria-pressed', s === 'file');
+  $('srcYt').hidden = s !== 'yt'; $('srcFile').hidden = s !== 'file';
+}
+$('srcYtBtn').onclick = () => setSource('yt');
+$('srcFileBtn').onclick = () => setSource('file');
+if (location.protocol === 'file:') $('fileProto').hidden = false;
+document.querySelector(`input[name=mode][value=${settings.mode}]`).checked = true;
+
+function readInto(fileInput, textarea, nameEl){
+  fileInput.onchange = () => {
+    const f = fileInput.files[0]; if (!f) return;
+    nameEl.textContent = f.name;
+    const r = new FileReader(); r.onload = () => textarea.value = r.result; r.readAsText(f);
+  };
+}
+readInto($('subFile'), $('subText'), $('subName'));
+readInto($('trFile'), $('trText'), $('trName'));
+$('vidFile').onchange = () => $('vidName').textContent = $('vidFile').files[0]?.name || '';
+
+const DEMO_SUBS = `1
+00:00:00,500 --> 00:00:03,000
+Practice makes perfect.
+
+2
+00:00:03,500 --> 00:00:06,500
+The quick brown fox jumps over the lazy dog.
+
+3
+00:00:07,000 --> 00:00:10,000
+Listen carefully and type what you hear.`;
+$('demoBtn').onclick = () => {
+  $('subText').value = DEMO_SUBS;
+  $('subName').textContent = 'exemplo.srt';
+  toast('Legendas de exemplo carregadas. Junta um vídeo e carrega em "Começar a praticar".');
+};
+
+function ytId(url){
+  url = (url || '').trim();
+  if (/^[\w-]{11}$/.test(url)) return url;
+  const m = url.match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([\w-]{11})/);
+  return m ? m[1] : null;
+}
+
+$('startBtn').onclick = () => {
+  const err = m => $('err').textContent = m;
+  err('');
+  const subs = $('subText').value;
+  if (!parseAny(subs).length) return err('Não foram encontradas legendas com tempos. Carrega um ficheiro .srt/.vtt ou cola a transcrição do YouTube.');
+  const mode = document.querySelector('input[name=mode]:checked').value;
+  settings.mode = mode; saveSettings();
+  const title = $('title').value.trim();
+  if (source === 'yt'){
+    const id = ytId($('ytUrl').value);
+    if (!id) return err('O link do YouTube não é válido. Copia o endereço completo do vídeo.');
+    const item = { id: 'v' + Date.now(), kind: 'yt', ytId: id, title: title || 'Vídeo do YouTube',
+      subs, trans: $('trText').value, created: Date.now(), last: Date.now(), prog: { idx: 0, done: [], completed: false } };
+    lib.unshift(item); saveLib(); renderLib();
+    openItem(item);
+  } else {
+    const f = $('vidFile').files[0];
+    if (!f) return err('Escolhe um ficheiro de vídeo.');
+    openItem({ id: 'tmp', kind: 'file', file: f, title: title || f.name, subs, trans: $('trText').value,
+      prog: { idx: 0, done: [], completed: false } });
+  }
+};
+
+function renderLib(){
+  const list = $('libList'); list.replaceChildren();
+  if (!lib.length){
+    const e = document.createElement('div'); e.className = 'empty';
+    e.textContent = 'Ainda não tens vídeos. Junta o primeiro à esquerda e ele aparece aqui, com o teu progresso.';
+    list.appendChild(e); return;
+  }
+  for (const it of lib){
+    const total = parseAny(it.subs).length || 1;
+    const pct = Math.round(it.prog.done.length / total * 100);
+    const wrap = document.createElement('div');
+    const b = document.createElement('button'); b.className = 'lib-item';
+    const th = document.createElement('div'); th.className = 'thumb';
+    th.style.backgroundImage = `url(https://i.ytimg.com/vi/${it.ytId}/mqdefault.jpg)`;
+    if (it.prog.completed){ const bd = document.createElement('span'); bd.className = 'badge'; bd.textContent = 'Concluído'; th.appendChild(bd); }
+    const info = document.createElement('div');
+    const h = document.createElement('h4'); h.textContent = it.title;
+    const meta = document.createElement('div'); meta.className = 'meta';
+    const chips = [`${it.prog.done.length}/${total} frases`];
+    if (it.prog.wpm) chips.push(`${it.prog.wpm} ppm`);
+    if (it.prog.acc != null && it.prog.wpm) chips.push(`${it.prog.acc}% precisão`);
+    chips.push(ago(it.last));
+    chips.forEach(c => { const s = document.createElement('span'); s.textContent = c; meta.appendChild(s); });
+    const pb = document.createElement('div'); pb.className = 'pbar'; pb.innerHTML = `<i style="width:${pct}%"></i>`;
+    info.append(h, meta, pb);
+    b.append(th, info);
+    b.onclick = () => openItem(it);
+    const act = document.createElement('div'); act.className = 'lib-actions';
+    const del = document.createElement('button'); del.className = 'del'; del.textContent = 'Remover';
+    del.onclick = () => {
+      if (del.dataset.armed){ lib = lib.filter(x => x !== it); saveLib(); renderLib(); return; }
+      del.dataset.armed = 1; del.textContent = 'Carrega outra vez para remover';
+      setTimeout(() => { if (del.isConnected){ delete del.dataset.armed; del.textContent = 'Remover'; } }, 3000);
+    };
+    act.appendChild(del);
+    wrap.append(b, act);
+    list.appendChild(wrap);
+  }
+}
+function ago(t){
+  if (!t) return '';
+  const d = (Date.now() - t) / 1000;
+  if (d < 60) return 'agora mesmo';
+  if (d < 3600) return `há ${Math.round(d / 60)} min`;
+  if (d < 86400) return `há ${Math.round(d / 3600)} h`;
+  return `há ${Math.round(d / 86400)} dias`;
+}
+renderLib();
+
+/* ============ Leitores ============ */
+let P = null, ytApi = null;
+function loadYT(){
+  if (window.YT && YT.Player) return Promise.resolve();
+  if (ytApi) return ytApi;
+  ytApi = new Promise((res, rej) => {
+    window.onYouTubeIframeAPIReady = res;
+    const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api';
+    s.onerror = () => { ytApi = null; rej(new Error('Não foi possível carregar o leitor do YouTube. Verifica a ligação à internet.')); };
+    document.head.appendChild(s);
+  });
+  return ytApi;
+}
+async function makeYt(id){
+  await loadYT();
+  $('stageHost').innerHTML = '<div id="ytEl"></div>';
+  return new Promise(res => {
+    const p = new YT.Player('ytEl', {
+      videoId: id,
+      playerVars: { rel: 0, playsinline: 1, cc_load_policy: 0, iv_load_policy: 3, modestbranding: 1 },
+      events: {
+        onReady: () => res({
+          play: () => p.playVideo(), pause: () => p.pauseVideo(),
+          seek: t => p.seekTo(t, true), time: () => p.getCurrentTime() || 0,
+          rate: r => p.setPlaybackRate(r), destroy: () => p.destroy()
+        }),
+        onError: e => toast(e.data === 101 || e.data === 150
+          ? 'O dono deste vídeo não permite que seja reproduzido fora do YouTube. Experimenta outro vídeo.'
+          : 'O YouTube não conseguiu reproduzir este vídeo (erro ' + e.data + ').')
+      }
+    });
+  });
+}
+function makeFile(file){
+  const v = document.createElement('video');
+  v.controls = true; v.playsInline = true; v.src = URL.createObjectURL(file);
+  $('stageHost').replaceChildren(v);
+  return Promise.resolve({
+    play: () => v.play().catch(() => {}), pause: () => v.pause(),
+    seek: t => { v.currentTime = t; }, time: () => v.currentTime,
+    rate: r => { v.playbackRate = r; },
+    destroy: () => { v.pause(); URL.revokeObjectURL(v.src); v.remove(); }
+  });
+}
+
+/* ============ Sessão de prática ============ */
+let item = null, cues = [], idx = 0, mode = 'type', prevLen = 0, pauseAt = null, tick = null, solving = false;
+let st;
+const resetStats = () => st = { keys: 0, errors: 0, chars: 0, ms: 0, last: 0, hints: 0 };
+
+async function openItem(it){
+  item = it; it.last = Date.now(); if (it.kind === 'yt') saveLib();
+  cues = parseAny(it.subs);
+  attachTranslation(cues, parseAny(it.trans || ''));
+  retarget();
+  resetStats();
+  $('pTitle').textContent = it.title;
+  $('home').hidden = true; $('player').hidden = false; scrollTo(0, 0);
+  syncSettingsUI();
+  setMode(settings.mode, true);
+  buildTranscript();
+  goTo(Math.min(it.prog.idx || 0, cues.length - 1), false);
+  if (P){ try { P.destroy(); } catch(e){} P = null; }
+  $('stageHost').replaceChildren();
+  try { P = it.kind === 'yt' ? await makeYt(it.ytId) : await makeFile(it.file); }
+  catch(e){ toast(e.message); return; }
+  P.rate(settings.speed);
+  clearInterval(tick); tick = setInterval(onTick, 60);
+}
+function retarget(){ cues.forEach(c => c.target = normTarget(c.text)); }
+
+function goHome(){
+  clearInterval(tick); pauseAt = null;
+  if (P){ try { P.destroy(); } catch(e){} P = null; }
+  $('stageHost').replaceChildren(); $('overlay').replaceChildren();
+  $('player').hidden = true; $('doneModal').hidden = true; $('home').hidden = false;
+  renderLib(); scrollTo(0, 0);
+}
+$('backBtn').onclick = goHome;
+$('logo').onclick = goHome;
+$('navLib').onclick = () => { goHome(); $('libPanel').scrollIntoView({ behavior: 'smooth' }); };
+
+/* Modos */
+document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+function setMode(m, initial){
+  const fromWatch = mode === 'watch';
+  mode = m; settings.mode = m; saveSettings();
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
+  $('typebox').hidden = m === 'watch';
+  $('tlist').classList.toggle('hide', m === 'dict');
+  $('tlist').classList.toggle('watch', m === 'watch');
+  $('hintBtn').hidden = false;
+  pauseAt = null;
+  if (initial) return;
+  if (m === 'watch'){ P && P.play(); }
+  else {
+    if (fromWatch && P){ const t = P.time(); const k = cues.findIndex(c => c.end > t); goTo(k < 0 ? 0 : k, false); P.pause(); }
+    else { renderLine(); markTranscript(); }
+  }
+  updateOverlay(null);
+}
+
+/* Transcrição */
+function fmt(t){ t = Math.floor(t); const h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), s = t % 60;
+  return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s).padStart(2, '0'); }
+function buildTranscript(){
+  const ol = $('tlist'); ol.replaceChildren();
+  cues.forEach((c, i) => {
+    const li = document.createElement('li'); li.dataset.i = i;
+    const tm = document.createElement('time'); tm.textContent = fmt(c.start);
+    const d = document.createElement('div');
+    const tx = document.createElement('span'); tx.className = 'tx'; tx.textContent = c.text;
+    d.appendChild(tx);
+    if (c.trans){ const tt = document.createElement('span'); tt.className = 'tt'; tt.textContent = c.trans; tt.hidden = !settings.trans; d.appendChild(tt); }
+    li.append(tm, d);
+    li.onclick = () => {
+      if (mode === 'watch'){ P && (P.seek(c.start), P.play()); }
+      else goTo(i, true);
+    };
+    ol.appendChild(li);
+  });
+  $('trCount').textContent = cues.length + ' frases';
+}
+function markTranscript(activeI = idx){
+  const done = new Set(item.prog.done);
+  const ol = $('tlist');
+  [...ol.children].forEach((li, i) => {
+    li.classList.toggle('done', done.has(i));
+    li.classList.toggle('active', i === activeI);
+  });
+  const li = ol.children[activeI];
+  if (li){
+    const top = li.offsetTop - ol.clientHeight / 2 + li.clientHeight / 2;
+    ol.scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }
+}
+
+/* Legendas sobre o vídeo */
+let lastOverlay = -2;
+function updateOverlay(c){
+  const key = c ? cues.indexOf(c) : -1;
+  if (key === lastOverlay) return; lastOverlay = key;
+  const ov = $('overlay'); ov.replaceChildren();
+  if (!c) return;
+  if (mode === 'watch'){ const s = document.createElement('span'); s.textContent = c.text; ov.appendChild(s); }
+  if (c.trans && settings.trans && mode !== 'dict'){ const s = document.createElement('span'); s.className = 'tr'; s.textContent = c.trans; ov.appendChild(s); }
+}
+
+/* Ciclo principal */
+let watchIdx = -1;
+function onTick(){
+  if (!P) return;
+  const t = P.time();
+  if (mode === 'watch'){
+    const k = cues.findIndex(c => t >= c.start && t < c.end + 0.2);
+    updateOverlay(cues[k]);
+    if (k !== watchIdx && k >= 0){ watchIdx = k; markTranscript(k); }
+    return;
+  }
+  const c = cues[idx];
+  updateOverlay(c && t >= c.start - 0.3 && t <= c.end + 0.5 ? c : null);
+  if (pauseAt !== null && t >= pauseAt){
+    if (settings.loop && !solving){ P.seek(Math.max(0, cues[idx].start - 0.15)); }
+    else { P.pause(); pauseAt = null; }
+  }
+}
+function playCue(i){
+  if (!P || !cues[i]) return;
+  P.seek(Math.max(0, cues[i].start - 0.15)); P.play();
+  pauseAt = (mode === 'dict' || settings.pause || settings.loop) ? cues[i].end + 0.1 : null;
+}
+
+function goTo(i, play){
+  if (!cues.length) return;
+  i = Math.max(0, Math.min(i, cues.length - 1));
+  idx = i; prevLen = 0; solving = false;
+  $('typing').value = '';
+  $('line').classList.remove('solved');
+  item.prog.idx = i; persist();
+  renderLine(); markTranscript(); updateStats();
+  if (play && mode !== 'watch') playCue(i);
+  if (mode !== 'watch' && matchMedia('(pointer:fine)').matches) $('typing').focus();
+}
+
+/* Linha de escrita */
+function renderLine(){
+  const box = $('line'); box.replaceChildren();
+  const c = cues[idx]; if (!c) return;
+  const t = c.target, typed = normTyped($('typing').value), dict = mode === 'dict';
+  let w = document.createElement('span'); w.className = 'w';
+  const flush = () => { if (w.childNodes.length) box.appendChild(w); w = document.createElement('span'); w.className = 'w'; };
+  for (let i = 0; i < t.length; i++){
+    const ch = t[i], s = document.createElement('span');
+    if (i < typed.length){
+      if (typed[i] === ch){ s.className = 'ok'; s.textContent = ch; }
+      else { s.className = 'bad'; const shown = dict ? typed[i] : ch; s.textContent = shown === ' ' ? '·' : shown; }
+    } else {
+      s.className = dict && /[\p{L}\p{N}]/u.test(ch) ? 'blank' : 'todo';
+      s.textContent = ch;
+      if (i === typed.length) s.classList.add('cur');
+    }
+    if (ch === ' '){ flush(); box.appendChild(s); } else w.appendChild(s);
+  }
+  flush();
+  if (typed.length >= t.length && !solving){ const e = document.createElement('span'); e.className = 'endcur'; box.appendChild(e); }
+  $('trLine').textContent = (settings.trans && c.trans) ? c.trans : '';
+}
+
+const typing = $('typing');
+typing.addEventListener('focus', () => $('line').classList.add('focus'));
+typing.addEventListener('blur', () => $('line').classList.remove('focus'));
+typing.addEventListener('input', () => {
+  if (solving || !cues[idx]) return;
+  const target = cues[idx].target;
+  if (typing.value.length > target.length + 3) typing.value = typing.value.slice(0, target.length + 3);
+  const typed = normTyped(typing.value);
+  const now = performance.now();
+  if (typed.length > prevLen){
+    if (st.last && now - st.last < 5000) st.ms += now - st.last;
+    st.last = now;
+    for (let i = prevLen; i < typed.length; i++){ st.keys++; if (typed[i] !== target[i]) st.errors++; }
+  }
+  prevLen = typed.length;
+  renderLine(); updateStats();
+  if (typed === target) solved();
+});
+
+function solved(){
+  solving = true;
+  st.chars += cues[idx].target.length + 1;
+  if (!item.prog.done.includes(idx)) item.prog.done.push(idx);
+  item.prog.wpm = wpm(); item.prog.acc = acc();
+  persist();
+  $('line').classList.add('solved'); renderLine(); markTranscript(); updateStats();
+  setTimeout(() => {
+    if (item.prog.done.length >= cues.length){ finish(); return; }
+    if (idx >= cues.length - 1){
+      const first = cues.findIndex((_, i) => !item.prog.done.includes(i));
+      goTo(first, true); return;
+    }
+    goTo(idx + 1, mode === 'dict' || settings.pause);
+  }, 380);
+}
+
+function hint(word){
+  const c = cues[idx]; if (!c || solving) return;
+  const t = c.target, typed = normTyped(typing.value);
+  let k = 0; while (k < typed.length && typed[k] === t[k]) k++;
+  let end = k + 1;
+  if (word){ while (end < t.length && t[end] !== ' ') end++; }
+  typing.value = t.slice(0, Math.min(end, t.length));
+  prevLen = typing.value.length; st.hints++;
+  renderLine(); updateStats();
+  if (normTyped(typing.value) === t) solved();
+  typing.focus();
+}
+
+function wpm(){ const m = st.ms / 60000; return m > 0.02 ? Math.round(st.chars / 5 / m) : 0; }
+function acc(){ return st.keys ? Math.max(0, Math.round((1 - st.errors / st.keys) * 100)) : 100; }
+function updateStats(){
+  $('stWpm').textContent = wpm();
+  $('stAcc').textContent = acc() + '%';
+  $('stHints').textContent = st.hints;
+  $('stProg').textContent = Math.round(item.prog.done.length / cues.length * 100) + '%';
+}
+function persist(){ if (item && item.kind === 'yt'){ item.last = Date.now(); saveLib(); } }
+
+function finish(){
+  item.prog.completed = true; persist();
+  P && P.pause();
+  $('dWpm').textContent = wpm(); $('dAcc').textContent = acc() + '%';
+  const s = Math.round(st.ms / 1000);
+  $('doneSub').textContent = `Escreveste as ${cues.length} frases em ${Math.floor(s / 60)} min ${s % 60} s, com ${st.hints} dicas.`;
+  $('doneModal').hidden = false; $('againBtn').focus();
+}
+$('againBtn').onclick = () => {
+  item.prog = { idx: 0, done: [], completed: item.prog.completed };
+  resetStats(); persist(); $('doneModal').hidden = true; markTranscript(); goTo(0, true);
+};
+$('doneLibBtn').onclick = goHome;
+
+/* Controlos */
+$('replayBtn').onclick = () => { playCue(idx); typing.focus(); };
+$('prevBtn').onclick = () => goTo(idx - 1, true);
+$('nextBtn').onclick = () => goTo(idx + 1, true);
+$('hintBtn').onclick = () => hint(false);
+$('line').onclick = () => typing.focus();
+
+document.addEventListener('keydown', e => {
+  if ($('player').hidden || !$('doneModal').hidden) return;
+  if (e.key === 'Escape'){ e.preventDefault(); if (mode === 'watch') return; playCue(idx); }
+  else if (e.key === 'Tab' && document.activeElement === typing){ e.preventDefault(); hint(e.shiftKey); }
+  else if (e.ctrlKey && e.key === 'ArrowRight'){ e.preventDefault(); goTo(idx + 1, true); }
+  else if (e.ctrlKey && e.key === 'ArrowLeft'){ e.preventDefault(); goTo(idx - 1, true); }
+});
+
+/* Definições */
+function syncSettingsUI(){
+  $('sSpeed').value = String(settings.speed);
+  $('sPause').checked = settings.pause; $('sCase').checked = settings.ic; $('sPunct').checked = settings.ip;
+  $('sTrans').checked = settings.trans; $('sLoop').checked = settings.loop;
+}
+$('sSpeed').onchange = e => { settings.speed = +e.target.value; saveSettings(); P && P.rate(settings.speed); };
+$('sPause').onchange = e => { settings.pause = e.target.checked; saveSettings(); };
+$('sLoop').onchange = e => { settings.loop = e.target.checked; saveSettings(); };
+$('sCase').onchange = e => { settings.ic = e.target.checked; saveSettings(); retarget(); goTo(idx, false); };
+$('sPunct').onchange = e => { settings.ip = e.target.checked; saveSettings(); retarget(); goTo(idx, false); };
+$('sTrans').onchange = e => {
+  settings.trans = e.target.checked; saveSettings();
+  document.querySelectorAll('.tlist .tt').forEach(t => t.hidden = !settings.trans);
+  lastOverlay = -2; renderLine();
+};
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
+}
+document.addEventListener('click', e => { const d = $('settings'); if (d.open && !d.contains(e.target)) d.open = false; });
+</script>
+</body>
+</html>
