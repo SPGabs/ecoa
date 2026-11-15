@@ -1,5 +1,7 @@
 # Ecoa
 
+**App:** https://ecoa-mu.vercel.app
+
 Pratica escrita e compreensão oral a escrever as legendas de vídeos do YouTube. Grátis, sem conta: os vídeos, as legendas e o progresso ficam guardados no browser de cada pessoa.
 
 ## Funções
@@ -34,10 +36,7 @@ Não abras o `index.html` com duplo clique: o service worker e alguns vídeos do
 
 ## Publicar
 
-1. Envia esta pasta para um repositório no GitHub.
-2. No Vercel: **Add New → Project → Import** o repositório.
-3. Framework Preset: **Other**. Deixa Build Command e Output Directory vazios.
-4. **Deploy.** Cada `git push` para a branch principal publica uma nova versão.
+O repositório está ligado ao projeto `ecoa` no Vercel: cada `git push` para a branch `main` publica uma nova versão em https://ecoa-mu.vercel.app.
 
 Quando publicares alterações, sobe o valor `VERSION` em `sw.js` (por exemplo `ecoa-v2`) para quem já tem a app instalada receber a versão nova.
 
