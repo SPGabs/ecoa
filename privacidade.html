@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacidade — Ecoa</title>
+<meta name="theme-color" content="#3B4BD8">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Recursive:wght,CASL@300..900,0..1&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#EEF0FA;--surface:#fff;--ink:#1D2346;--muted:#6A7099;--accent:#3B4BD8}
+  @media (prefers-color-scheme:dark){:root{--bg:#141833;--surface:#1D2246;--ink:#E9ECFA;--muted:#9AA0C7;--accent:#8E9BFF}}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Recursive",system-ui,sans-serif;line-height:1.65}
+  main{max-width:68ch;margin:0 auto;padding:40px 20px 80px}
+  h1{font-size:2.2rem;line-height:1.1;letter-spacing:-.02em;font-variation-settings:"CASL" 1;margin:24px 0 8px}
+  h2{font-size:1.15rem;margin:32px 0 6px}
+  p,li{color:var(--ink)}
+  .muted{color:var(--muted)}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+  <a href="/">← Voltar ao ecoa</a>
+  <h1>Privacidade</h1>
+  <p class="muted">Última atualização: 15 de novembro de 2026</p>
+
+  <h2>Sem conta</h2>
+  <p>Podes usar o ecoa sem criar conta. Nesse caso, os vídeos, as legendas, as definições e o progresso ficam guardados só no teu browser e não são enviados para nenhum servidor do ecoa.</p>
+
+  <h2>Com conta</h2>
+  <p>Se entrares com o teu email, guardamos:</p>
+  <ul>
+    <li>o teu endereço de email, para te enviar o link de entrada e identificar a tua conta;</li>
+    <li>a tua biblioteca: o identificador e o nome dos vídeos do YouTube, as legendas que juntaste e o teu progresso (frases concluídas, palavras por minuto, precisão e data do último acesso).</li>
+  </ul>
+  <p>Usamos estes dados apenas para sincronizar a tua biblioteca entre dispositivos. Não os vendemos, não os partilhamos para publicidade e não enviamos emails de marketing.</p>
+  <p>Os dados ficam guardados no Supabase, o serviço que gere as contas e a base de dados do ecoa. Cada conta só consegue ler os seus próprios dados.</p>
+
+  <h2>Serviços de terceiros</h2>
+  <ul>
+    <li><b>YouTube (Google):</b> os vídeos são reproduzidos com o leitor oficial do YouTube, que recolhe dados segundo a <a href="https://policies.google.com/privacy">política de privacidade da Google</a>.</li>
+    <li><b>Vercel:</b> aloja o site e pode registar dados técnicos dos acessos, como o endereço IP.</li>
+    <li><b>Google Fonts:</b> fornece o tipo de letra da página.</li>
+  </ul>
+
+  <h2>Os teus direitos</h2>
+  <p>Podes exportar os teus dados a qualquer momento (botão <b>Exportar ficheiro</b> na janela da conta) e apagar a conta com todos os dados guardados na nuvem (botão <b>Apagar a minha conta</b>). Ao abrigo do RGPD, também podes pedir acesso, correção ou eliminação dos teus dados, e apresentar queixa à <a href="https://www.cnpd.pt">CNPD</a>.</p>
+
+  <h2>Contacto</h2>
+  <p>Para questões sobre privacidade, abre um pedido no repositório do projeto: <a href="https://github.com/SPGabs/ecoa/issues">github.com/SPGabs/ecoa</a>.</p>
+</main>
+</body>
+</html>

@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..900,0..1,0..1,0..1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 /* ---------- Tokens ---------- */
 :root{
@@ -202,6 +203,18 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
 .modal .big b{display:block;font-size:2.4rem;font-weight:850;font-variation-settings:"CASL" 1;line-height:1.1}
 .modal .big small{color:var(--muted)}
 
+/* Conta */
+.acc-btn{display:inline-flex;align-items:center;gap:8px}
+.acc-dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.acc-dot.on{background:var(--ok)}
+.acc-dot.err{background:var(--bad)}
+#accModal .panel{text-align:left;max-width:460px;max-height:calc(100vh - 40px);overflow:auto}
+#accModal h3{margin:22px 0 6px;font-size:1rem;font-weight:700}
+#accModal .prow{margin-top:10px}
+.closex{float:right;margin:-6px -6px 0 0}
+.status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.92rem;margin:6px 0 0}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.okmsg{color:var(--ok);font-size:.93rem;margin:10px 0 0;min-height:1.2em}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:999px;z-index:60;font-size:.93rem;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
 </style>
 </head>
@@ -214,6 +227,7 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
   </button>
   <nav>
     <button class="ghost" id="navLib">Biblioteca</button>
+    <button class="ghost acc-btn" id="accBtn" aria-haspopup="dialog"><span class="acc-dot" id="accDot"></span><span id="accLabel">Entrar</span></button>
     <button class="ghost icon-btn" id="themeBtn" aria-label="Mudar tema claro/escuro">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
@@ -309,7 +323,7 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
     </section>
   </div>
 
-  <p class="foot">O ecoa não guarda nada num servidor: os vídeos, as legendas e o progresso ficam só neste browser.</p>
+  <p class="foot">Sem conta, os vídeos, as legendas e o progresso ficam só neste browser. Com conta, ficam também guardados na nuvem e aparecem em todos os teus dispositivos. <a href="/privacidade">Privacidade</a></p>
 </main>
 
 <!-- ================= PRÁTICA ================= -->
@@ -392,6 +406,49 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
   </div>
 </div>
 
+<div class="modal" id="accModal" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="accTitle">
+    <button class="ghost icon-btn closex" id="accClose" aria-label="Fechar">✕</button>
+
+    <div id="accOut">
+      <h2 id="accTitle">Guarda o teu progresso</h2>
+      <p class="sub">Entra com o teu email para teres a biblioteca e o progresso no telemóvel e no computador. Não precisas de palavra-passe: enviamos-te um link para entrar.</p>
+      <form id="loginForm">
+        <label class="field"><span>Email</span>
+          <input class="input" id="loginEmail" type="email" autocomplete="email" required placeholder="nome@exemplo.com"></label>
+        <button class="btn primary" type="submit" id="loginBtn">Enviar link de entrada</button>
+      </form>
+      <p class="okmsg" id="loginMsg" role="status"></p>
+    </div>
+
+    <div id="accIn" hidden>
+      <h2>A tua conta</h2>
+      <p class="sub" id="accEmail"></p>
+      <p class="status"><span class="acc-dot" id="syncDot"></span><span id="syncText">Sincronizado</span></p>
+      <div class="prow">
+        <button class="btn small" id="syncBtn">Sincronizar agora</button>
+        <button class="btn small" id="logoutBtn">Sair</button>
+      </div>
+    </div>
+
+    <h3>Cópia de segurança</h3>
+    <p class="hint" style="margin-top:0">Guarda a biblioteca e o progresso num ficheiro, ou recupera-os a partir de um ficheiro guardado antes.</p>
+    <div class="prow">
+      <button class="btn small" id="exportBtn">Exportar ficheiro</button>
+      <label class="btn small filebtn"><input type="file" id="importFile" accept=".json,application/json">Importar ficheiro</label>
+    </div>
+
+    <div id="accDanger" hidden>
+      <h3>Apagar conta</h3>
+      <p class="hint" style="margin-top:0">Apaga a conta e tudo o que está guardado na nuvem. O que está neste browser fica.</p>
+      <div class="prow"><button class="btn small danger" id="deleteAccBtn">Apagar a minha conta</button></div>
+    </div>
+
+    <p class="err" id="accErr" role="alert"></p>
+    <p class="hint"><a href="/privacidade">Política de privacidade</a></p>
+  </div>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -405,7 +462,11 @@ const store = {
 let settings = Object.assign({ speed:1, pause:true, ic:true, ip:false, trans:true, loop:false, theme:null, mode:'type' }, store.get('ecoa.settings', {}));
 let lib = store.get('ecoa.lib', []);
 const saveSettings = () => store.set('ecoa.settings', settings);
-const saveLib = () => store.set('ecoa.lib', lib);
+const localSave = () => store.set('ecoa.lib', lib);
+const saveLib = () => { localSave(); scheduleSync(); };
+let sb = null, user = null, syncT = null, syncing = false, syncAgain = false;
+let tomb = store.get('ecoa.deleted', {});   // vídeos apagados: id -> quando
+const saveTomb = () => store.set('ecoa.deleted', tomb);
 
 /* ============ Tema ============ */
 function applyTheme(){
@@ -615,7 +676,7 @@ function renderLib(){
     const act = document.createElement('div'); act.className = 'lib-actions';
     const del = document.createElement('button'); del.className = 'del'; del.textContent = 'Remover';
     del.onclick = () => {
-      if (del.dataset.armed){ lib = lib.filter(x => x !== it); saveLib(); renderLib(); return; }
+      if (del.dataset.armed){ lib = lib.filter(x => x !== it); tomb[it.id] = Date.now(); saveTomb(); saveLib(); renderLib(); return; }
       del.dataset.armed = 1; del.textContent = 'Carrega outra vez para remover';
       setTimeout(() => { if (del.isConnected){ delete del.dataset.armed; del.textContent = 'Remover'; } }, 3000);
     };
@@ -950,6 +1011,149 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
 }
 document.addEventListener('click', e => { const d = $('settings'); if (d.open && !d.contains(e.target)) d.open = false; });
+
+/* ============ Conta e sincronização (Supabase) ============ */
+const SB_URL = 'https://tjnukdtypjuggqvlqbzu.supabase.co';
+const SB_KEY = 'sb_publishable_CLZSTjAHMqRKR_Hw7r95mg_Cfy15nuZ';
+
+function scheduleSync(){ if (!user) return; clearTimeout(syncT); syncT = setTimeout(syncNow, 2500); }
+
+function setSync(state, text){
+  $('syncText').textContent = text;
+  for (const d of [$('syncDot'), $('accDot')]){ d.classList.toggle('on', state === 'ok'); d.classList.toggle('err', state === 'err'); }
+}
+function renderAcc(){
+  $('accLabel').textContent = user ? 'Conta' : 'Entrar';
+  $('accOut').hidden = !!user; $('accIn').hidden = !user; $('accDanger').hidden = !user;
+  if (user) $('accEmail').textContent = 'Sessão iniciada como ' + user.email;
+  else setSync('', '');
+}
+
+function initSupabase(){
+  if (!window.supabase){ renderAcc(); return; }   // sem internet: a app funciona só com os dados locais
+  sb = supabase.createClient(SB_URL, SB_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  sb.auth.onAuthStateChange((event, session) => {
+    const before = user && user.id;
+    user = session ? session.user : null;
+    renderAcc();
+    if (user && user.id !== before){ setTimeout(syncNow, 0); if (event === 'SIGNED_IN' && location.hash === '') toast('Sessão iniciada. A sincronizar a biblioteca…'); }
+  });
+}
+
+async function syncNow(){
+  if (!sb || !user) return;
+  if (syncing){ syncAgain = true; return; }
+  syncing = true; setSync('', 'A sincronizar…');
+  try {
+    const { data: rows, error } = await sb.from('videos').select('id,data,updated_at,deleted');
+    if (error) throw error;
+    const remote = new Map(rows.map(r => [r.id, r]));
+    const tsOf = r => new Date(r.updated_at).getTime();
+
+    // Nuvem -> este browser (ganha a versão mais recente)
+    for (const r of rows){
+      if (item && item.id === r.id) continue;          // não mexer no vídeo que está aberto
+      const i = lib.findIndex(x => x.id === r.id);
+      const localT = i >= 0 ? (lib[i].last || 0) : (tomb[r.id] || 0);
+      const rt = tsOf(r);
+      if (rt <= localT) continue;
+      if (r.deleted || !r.data){ if (i >= 0) lib.splice(i, 1); tomb[r.id] = rt; }
+      else { const it = r.data; it.last = rt; if (i >= 0) lib[i] = it; else lib.push(it); delete tomb[r.id]; }
+    }
+
+    // Este browser -> nuvem
+    const ups = [];
+    for (const it of lib){
+      if (it.kind !== 'yt') continue;
+      const r = remote.get(it.id);
+      if (!r || (it.last || 0) > tsOf(r)) ups.push({ id: it.id, user_id: user.id, data: it, deleted: false, updated_at: new Date(it.last || Date.now()).toISOString() });
+    }
+    for (const [id, t] of Object.entries(tomb)){
+      const r = remote.get(id);
+      if (r ? (!r.deleted && t > tsOf(r)) : false) ups.push({ id, user_id: user.id, data: null, deleted: true, updated_at: new Date(t).toISOString() });
+    }
+    if (ups.length){ const { error: e2 } = await sb.from('videos').upsert(ups); if (e2) throw e2; }
+
+    lib.sort((a, b) => (b.created || 0) - (a.created || 0));
+    localSave(); saveTomb();
+    if (!$('home').hidden) renderLib();
+    setSync('ok', 'Sincronizado às ' + new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }));
+  } catch(e){
+    console.error('Sincronização', e);
+    setSync('err', 'Não foi possível sincronizar. Os dados continuam guardados neste browser.');
+  }
+  syncing = false;
+  if (syncAgain){ syncAgain = false; syncNow(); }
+}
+
+/* Janela da conta */
+function openAcc(){ $('accErr').textContent = ''; $('accModal').hidden = false; (user ? $('syncBtn') : $('loginEmail')).focus(); }
+function closeAcc(){ $('accModal').hidden = true; $('accBtn').focus(); }
+$('accBtn').onclick = openAcc;
+$('accClose').onclick = closeAcc;
+$('accModal').addEventListener('click', e => { if (e.target === $('accModal')) closeAcc(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('accModal').hidden) closeAcc(); });
+
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('accErr').textContent = ''; $('loginMsg').textContent = '';
+  if (!sb) { $('accErr').textContent = 'Sem ligação ao serviço de contas. Verifica a internet e recarrega a página.'; return; }
+  const email = $('loginEmail').value.trim();
+  $('loginBtn').disabled = true;
+  const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: location.origin + '/' } });
+  $('loginBtn').disabled = false;
+  if (error) $('accErr').textContent = /rate|limit/i.test(error.message)
+    ? 'Foram pedidos demasiados links. Espera alguns minutos e tenta de novo.'
+    : 'Não foi possível enviar o link: ' + error.message;
+  else $('loginMsg').textContent = 'Link enviado para ' + email + '. Abre o email neste dispositivo e carrega no link para entrar.';
+});
+$('syncBtn').onclick = () => syncNow();
+$('logoutBtn').onclick = async () => {
+  await syncNow();
+  await sb.auth.signOut();
+  toast('Sessão terminada. A biblioteca continua neste browser.');
+};
+$('deleteAccBtn').onclick = async () => {
+  const b = $('deleteAccBtn');
+  if (!b.dataset.armed){ b.dataset.armed = 1; b.textContent = 'Carrega outra vez para apagar de vez'; setTimeout(() => { delete b.dataset.armed; b.textContent = 'Apagar a minha conta'; }, 4000); return; }
+  const { error } = await sb.rpc('delete_my_account');
+  if (error){ $('accErr').textContent = 'Não foi possível apagar a conta: ' + error.message; return; }
+  await sb.auth.signOut();
+  closeAcc(); toast('Conta e dados na nuvem apagados.');
+};
+
+/* Cópia de segurança em ficheiro */
+$('exportBtn').onclick = () => {
+  const data = { app: 'ecoa', version: 1, exported: new Date().toISOString(), lib, settings };
+  const url = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'ecoa-copia-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('Cópia exportada: ' + lib.length + ' vídeos.');
+};
+$('importFile').onchange = () => {
+  const f = $('importFile').files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    $('importFile').value = '';
+    let d; try { d = JSON.parse(r.result); } catch(e){ d = null; }
+    if (!d || d.app !== 'ecoa' || !Array.isArray(d.lib)){ $('accErr').textContent = 'Este ficheiro não é uma cópia do ecoa.'; return; }
+    let added = 0, updated = 0;
+    for (const it of d.lib){
+      if (!it || !it.id || it.kind !== 'yt') continue;
+      const i = lib.findIndex(x => x.id === it.id);
+      if (i < 0){ lib.push(it); added++; delete tomb[it.id]; }
+      else if ((it.last || 0) > (lib[i].last || 0)){ lib[i] = it; updated++; }
+    }
+    lib.sort((a, b) => (b.created || 0) - (a.created || 0));
+    saveTomb(); saveLib(); renderLib();
+    toast(`Cópia importada: ${added} vídeos novos, ${updated} atualizados.`);
+  };
+  r.readAsText(f);
+};
+
+initSupabase();
 </script>
 </body>
 </html>
