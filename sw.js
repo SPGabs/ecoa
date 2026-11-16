@@ -1,6 +1,6 @@
 // Service worker do Ecoa: guarda a app para abrir mesmo sem internet.
 // Sobe a versão sempre que publicares alterações, para os utilizadores receberem a nova versão.
-const VERSION = 'ecoa-v2';
+const VERSION = 'ecoa-v3';
 const SHELL = [
   '/',
   '/index.html',

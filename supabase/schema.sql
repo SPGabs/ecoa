@@ -50,3 +50,34 @@ $$;
 
 revoke execute on function public.delete_my_account() from public, anon;
 grant execute on function public.delete_my_account() to authenticated;
+
+-- Sessões, atividade diária, frases para rever e palavras guardadas.
+create table if not exists public.records (
+  user_id    uuid        not null default auth.uid() references auth.users(id) on delete cascade,
+  kind       text        not null check (kind in ('session', 'activity', 'card', 'word')),
+  id         text        not null,
+  data       jsonb,
+  updated_at timestamptz not null default now(),
+  deleted    boolean     not null default false,
+  primary key (user_id, kind, id),
+  constraint records_data_size check (data is null or pg_column_size(data) < 200000)
+);
+
+alter table public.records enable row level security;
+
+drop policy if exists "records: ler os próprios" on public.records;
+drop policy if exists "records: criar os próprios" on public.records;
+drop policy if exists "records: alterar os próprios" on public.records;
+drop policy if exists "records: apagar os próprios" on public.records;
+
+create policy "records: ler os próprios" on public.records
+  for select to authenticated using ((select auth.uid()) = user_id);
+create policy "records: criar os próprios" on public.records
+  for insert to authenticated with check ((select auth.uid()) = user_id);
+create policy "records: alterar os próprios" on public.records
+  for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id);
+create policy "records: apagar os próprios" on public.records
+  for delete to authenticated using ((select auth.uid()) = user_id);
+
+revoke all on public.records from anon;
+grant select, insert, update, delete on public.records to authenticated;

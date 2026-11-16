@@ -48,7 +48,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .logo{display:flex;align-items:center;gap:10px;font-size:1.45rem;font-weight:850;letter-spacing:-.02em;
   font-variation-settings:"CASL" 1;background:none;border:0;padding:0;cursor:pointer}
 .logo svg{width:30px;height:30px}
-.top nav{margin-left:auto;display:flex;gap:6px;align-items:center}
+.top{flex-wrap:wrap;row-gap:6px}
+.topright{display:flex;gap:6px;align-items:center;margin-left:auto}
+.mainnav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;min-width:0;margin-left:12px}
+.mainnav::-webkit-scrollbar{display:none}
+.mainnav a{white-space:nowrap;text-decoration:none;color:var(--muted);font-weight:600;padding:8px 12px;border-radius:999px;display:inline-flex;align-items:center}
+.mainnav a:hover{color:var(--ink);background:var(--sunk)}
+.mainnav a[aria-current="page"]{color:var(--ink);background:var(--surface);box-shadow:0 1px 3px rgba(29,35,70,.12)}
+@media (max-width:820px){.mainnav{order:3;flex-basis:100%;margin:0 -6px}}
+.badge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:.72rem;font-weight:700;margin-left:6px}
 .ghost{background:none;border:0;padding:8px 12px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:550}
 .ghost:hover{color:var(--ink);background:var(--sunk)}
 .icon-btn{width:40px;height:40px;display:grid;place-items:center;padding:0}
@@ -199,9 +207,109 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
 /* Conclusão */
 .modal{position:fixed;inset:0;background:rgba(14,17,40,.55);display:grid;place-items:center;z-index:50;padding:20px}
 .modal .panel{max-width:440px;width:100%;text-align:center}
-.modal .big{display:flex;justify-content:center;gap:28px;margin:18px 0}
+.modal .big{display:flex;justify-content:center;gap:24px;margin:18px 0;flex-wrap:wrap}
 .modal .big b{display:block;font-size:2.4rem;font-weight:850;font-variation-settings:"CASL" 1;line-height:1.1}
 .modal .big small{color:var(--muted)}
+
+/* Secções */
+.vhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:clamp(24px,5vw,48px) 0 22px}
+.vhead h1{margin:0 0 8px;font-size:clamp(2rem,5vw,3rem);letter-spacing:-.03em;font-weight:850;font-variation-settings:"CASL" 1;line-height:1.05}
+.vhead .sub{margin:0;color:var(--muted);max-width:62ch}
+.searchf{margin:0;min-width:220px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+.fields2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+@media (max-width:560px){.fields2{grid-template-columns:1fr}}
+.guide{margin-top:8px;color:var(--ink);font-size:.92rem}
+.guide h4{margin:14px 0 4px;font-size:.92rem}
+.guide p{margin:0;color:var(--muted)}
+.guide ol{margin:0}
+.empty-cta{display:grid;gap:10px;justify-items:start}
+.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 20px}
+@media (max-width:560px){.statrow{grid-template-columns:1fr 1fr}}
+
+/* Calendário de atividade */
+.heatwrap{overflow-x:auto;padding-bottom:6px}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,14px);grid-auto-columns:14px;gap:3px}
+.heatmonths{display:grid;grid-auto-flow:column;grid-auto-columns:14px;gap:3px;font-size:.72rem;color:var(--muted);height:18px;white-space:nowrap}
+.heat i,.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;background:var(--sunk)}
+.legend{display:flex;align-items:center;gap:4px}
+[data-l="1"]{background:color-mix(in srgb,var(--accent) 28%,var(--sunk))!important}
+[data-l="2"]{background:color-mix(in srgb,var(--accent) 50%,var(--sunk))!important}
+[data-l="3"]{background:color-mix(in srgb,var(--accent) 75%,var(--sunk))!important}
+[data-l="4"]{background:var(--accent)!important}
+.heat i.out{visibility:hidden}
+.heat i.today{outline:2px solid var(--marker);outline-offset:1px}
+
+/* Gráficos */
+.chart svg{width:100%;height:auto;display:block}
+.chart .ln{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.chart .ar{fill:color-mix(in srgb,var(--accent) 12%,transparent)}
+.chart .gd{stroke:var(--line);stroke-width:1}
+.chart .ax{fill:var(--muted);font-size:11px;font-family:inherit}
+.chart .pt{fill:var(--surface);stroke:var(--accent);stroke-width:2}
+.chart .none{color:var(--muted);padding:30px 0;text-align:center}
+.sess{display:grid;grid-template-columns:1fr auto;gap:2px 14px;padding:12px 0;border-top:1px solid var(--line);align-items:center}
+.sess:first-child{border-top:0}
+.sess b{font-weight:650}
+.sess .nums{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.chip{background:var(--sunk);padding:2px 9px;border-radius:999px;font-size:.8rem;color:var(--muted);white-space:nowrap}
+
+/* Rever */
+.replist{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.replist li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--sunk);border-radius:var(--r-sm);padding:8px 12px}
+.replist .cnt{color:var(--muted);font-size:.85rem;white-space:nowrap}
+.replist .w{font-variation-settings:"MONO" 1}
+.swap .t{color:var(--bad);text-decoration:line-through;text-decoration-thickness:1px}
+.swap .e{color:var(--ok)}
+.due-big{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:850;font-variation-settings:"CASL" 1;margin:0}
+
+/* Palavras */
+.word-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;align-items:start}
+.wcard{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:18px}
+.wcard header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.wcard h3{margin:0;font-size:1.45rem;font-variation-settings:"CASL" 1;letter-spacing:-.01em}
+.ph{color:var(--muted);font-family:"Recursive",ui-monospace,monospace;font-variation-settings:"MONO" 1;font-size:.88rem}
+.defs{margin:10px 0 4px;padding-left:20px;font-size:.93rem}
+.defs li{margin-bottom:4px}
+.defs i{color:var(--muted);font-style:normal;font-size:.82rem;margin-right:4px}
+.ctx{border-top:1px solid var(--line);padding-top:10px;margin-top:10px;font-size:.9rem;display:grid;gap:8px}
+.ctx div{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.ctx q{color:var(--ink)}
+.ctx small{display:block;color:var(--muted)}
+.wcard .del{margin-left:auto}
+.wpop{position:fixed;z-index:45;width:min(340px,calc(100vw - 24px));background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:0 12px 40px rgba(14,17,40,.25);padding:14px 16px}
+.wpop header{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.wpop h3{margin:0;font-size:1.25rem;font-variation-settings:"CASL" 1}
+.wpop .prow{margin-top:10px}
+.tlist .wd{border-radius:4px;cursor:pointer}
+.tlist .wd:hover{background:color-mix(in srgb,var(--marker) 60%,transparent);color:#1D2346}
+.tlist.hide li:not(.done) .wd{pointer-events:none}
+.side-hint{margin:-4px 18px 6px}
+
+/* Músicas */
+.artist + .artist{margin-top:20px}
+.artist h2{font-size:1.5rem}
+.album h3{margin:18px 0 8px;color:var(--muted);font-size:.95rem;font-weight:650}
+.songs{display:grid;gap:8px}
+.song-row{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center}
+.song{display:grid;grid-template-columns:1fr auto;align-items:center;gap:14px;width:100%;text-align:left;background:var(--sunk);border:1.5px solid transparent;border-radius:var(--r-md);padding:12px 14px;cursor:pointer}
+.song:hover{border-color:var(--accent)}
+.song b{display:block;font-weight:650}
+.song .meta{margin-top:4px}
+.score{text-align:right;font-size:1.5rem;font-weight:850;font-variation-settings:"CASL" 1;line-height:1}
+.score small{display:block;font-size:.72rem;font-weight:500;color:var(--muted);margin-top:2px}
+.cover{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;background:linear-gradient(160deg,#3B4BD8,#141833);padding:20px 20px 80px;z-index:1}
+.cover h2{margin:0;font-size:clamp(1.4rem,4vw,2.4rem);font-variation-settings:"CASL" 1;letter-spacing:-.02em}
+.cover p{margin:6px 0 0;opacity:.85}
+.cover .cover-msg{margin:14px 0 10px}
+.cover.need{padding:16px}
+@media (max-width:560px){.cover{padding:14px 14px 70px}.cover.need{padding:12px}.cover p{font-size:.88rem}.cover .cover-msg{margin:8px 0}}
+.cover .btn{color:var(--ink)}
+.stage audio{position:absolute;left:12px;bottom:12px;width:calc(100% - 24px);z-index:2}
+.mark-h{margin:0 0 4px;font-size:1.15rem}
+.markcur{font-family:"Recursive",ui-monospace,monospace;font-variation-settings:"MONO" 1;font-size:clamp(1.15rem,2.6vw,1.5rem);background:var(--sunk);border-radius:var(--r-md);padding:14px;margin:12px 0 6px}
+.marknext{color:var(--muted);padding:0 14px;min-height:1.5em}
 
 /* Conta */
 .acc-btn{display:inline-flex;align-items:center;gap:8px}
@@ -225,13 +333,19 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
     <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="6" width="28" height="20" rx="6" fill="var(--accent)"/><rect x="7" y="17" width="9" height="3" rx="1.5" fill="var(--marker)"/><rect x="18" y="17" width="7" height="3" rx="1.5" fill="#fff" opacity=".8"/><path d="M13 10.5v4l3.5-2z" fill="#fff"/></svg>
     ecoa
   </button>
-  <nav>
-    <button class="ghost" id="navLib">Biblioteca</button>
+  <nav class="mainnav" aria-label="Secções">
+    <a href="#" data-view="home">Início</a>
+    <a href="#musicas" data-view="musicas">Músicas</a>
+    <a href="#rever" data-view="rever">Rever<span class="badge" id="revBadge" hidden></span></a>
+    <a href="#palavras" data-view="palavras">Palavras</a>
+    <a href="#progresso" data-view="progresso">Progresso</a>
+  </nav>
+  <div class="topright">
     <button class="ghost acc-btn" id="accBtn" aria-haspopup="dialog"><span class="acc-dot" id="accDot"></span><span id="accLabel">Entrar</span></button>
     <button class="ghost icon-btn" id="themeBtn" aria-label="Mudar tema claro/escuro">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
-  </nav>
+  </div>
 </div>
 
 <!-- ================= INÍCIO ================= -->
@@ -250,41 +364,79 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
       <div class="step">
         <div class="n">1</div>
         <div>
-          <h3>Escolhe o vídeo</h3>
-          <div class="seg" role="group" aria-label="Origem do vídeo">
+          <h3 id="step1Title">Escolhe o vídeo</h3>
+          <div class="seg" role="group" aria-label="O que vais praticar">
+            <button type="button" id="kindVideoBtn" aria-pressed="true">Vídeo</button>
+            <button type="button" id="kindMusicBtn" aria-pressed="false">Música</button>
+          </div>
+          <div class="seg" role="group" aria-label="Origem">
             <button type="button" id="srcYtBtn" aria-pressed="true">YouTube</button>
             <button type="button" id="srcFileBtn" aria-pressed="false">Ficheiro do computador</button>
           </div>
           <div id="srcYt">
-            <label class="field"><span>Link do vídeo</span>
+            <label class="field"><span id="ytLabel">Link do vídeo</span>
               <input class="input" id="ytUrl" type="url" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off"></label>
             <p class="hint" id="fileProto" hidden>Abriste a página como ficheiro. Se o vídeo não reproduzir, abre-a através de um servidor (por exemplo, GitHub Pages).</p>
           </div>
           <div id="srcFile" hidden>
-            <label class="btn small filebtn"><input type="file" id="vidFile" accept="video/*">Escolher vídeo</label>
+            <label class="btn small filebtn"><input type="file" id="vidFile" accept="video/*"><span id="fileBtnText">Escolher vídeo</span></label>
             <span class="filename" id="vidName"></span>
-            <p class="hint">Vídeos do computador não ficam na biblioteca.</p>
+            <p class="hint" id="fileHint">Vídeos do computador não ficam na biblioteca.</p>
           </div>
-          <label class="field" style="margin-top:6px"><span>Nome (opcional)</span>
-            <input class="input" id="title" type="text" placeholder="Ex.: Palestra TED sobre o sono"></label>
+          <div id="videoFields">
+            <label class="field" style="margin-top:6px"><span>Nome (opcional)</span>
+              <input class="input" id="title" type="text" placeholder="Ex.: Palestra TED sobre o sono"></label>
+          </div>
+          <div id="musicFields" hidden>
+            <div class="fields2">
+              <label class="field"><span>Música</span><input class="input" id="mTitle" type="text" placeholder="Nome da música"></label>
+              <label class="field"><span>Artista</span><input class="input" id="mArtist" type="text" placeholder="Nome do artista"></label>
+            </div>
+            <label class="field"><span>Álbum (opcional)</span><input class="input" id="mAlbum" type="text" placeholder="Para agrupar músicas do mesmo álbum"></label>
+          </div>
         </div>
       </div>
 
       <div class="step">
         <div class="n">2</div>
         <div>
-          <h3>Junta as legendas</h3>
-          <label class="btn small filebtn"><input type="file" id="subFile" accept=".srt,.vtt,.txt,text/vtt,text/plain">Carregar .srt ou .vtt</label>
+          <h3 id="step2Title">Junta as legendas</h3>
+          <label class="btn small filebtn"><input type="file" id="subFile" accept=".srt,.vtt,.lrc,.txt,text/vtt,text/plain"><span id="subBtnText">Carregar .srt ou .vtt</span></label>
           <span class="filename" id="subName"></span>
-          <label class="field" style="margin-top:12px"><span>Ou cola as legendas ou a transcrição do YouTube</span>
+          <label class="field" style="margin-top:12px"><span id="subLabel">Ou cola as legendas ou a transcrição do YouTube</span>
             <textarea id="subText" placeholder="0:00&#10;Hello everyone and welcome back&#10;0:04&#10;today we're talking about sleep"></textarea></label>
-          <details class="help">
-            <summary>Como copiar a transcrição do YouTube</summary>
-            <ol>
-              <li>Abre o vídeo no YouTube, no computador.</li>
-              <li>Na descrição, carrega em <b>Mostrar transcrição</b>.</li>
-              <li>Seleciona o texto todo do painel, copia e cola aqui.</li>
-            </ol>
+          <details class="help" id="helpVideo">
+            <summary>Onde encontrar as legendas</summary>
+            <div class="guide">
+              <h4>Opção 1: copiar a transcrição do YouTube</h4>
+              <ol>
+                <li>Abre o vídeo no YouTube, no computador.</li>
+                <li>Por baixo do vídeo, abre a descrição e carrega em <b>Mostrar transcrição</b>.</li>
+                <li>Seleciona todo o texto do painel que abre à direita, copia e cola aqui.</li>
+              </ol>
+              <h4>Opção 2: descarregar o ficheiro .srt</h4>
+              <ol>
+                <li>Copia o link do vídeo do YouTube.</li>
+                <li>Abre o <a href="https://downsub.com" target="_blank" rel="noopener">DownSub</a> e cola o link.</li>
+                <li>Na lista, escolhe <b>English</b> e carrega em <b>SRT</b>. Prefere a opção sem "auto-generated": as legendas automáticas têm mais erros e quase não têm pontuação.</li>
+                <li>Carrega o ficheiro aqui com o botão <b>Carregar .srt ou .vtt</b>.</li>
+              </ol>
+              <h4>Vídeos com boas legendas para começar</h4>
+              <p>Os canais <b>TED</b> e <b>TED-Ed</b> no YouTube têm legendas feitas por pessoas, e os vídeos do TED-Ed são curtos (cerca de 5 minutos).</p>
+              <h4>Séries e filmes</h4>
+              <p>Usa o vídeo que tens no computador (opção <b>Ficheiro do computador</b>) e procura as legendas em inglês no <a href="https://www.opensubtitles.org" target="_blank" rel="noopener">OpenSubtitles</a>. Escolhe legendas da mesma versão do vídeo, senão os tempos não coincidem.</p>
+            </div>
+          </details>
+          <details class="help" id="helpMusic" hidden>
+            <summary>Onde encontrar a letra</summary>
+            <div class="guide">
+              <h4>Letra simples</h4>
+              <p>Procura a letra na internet, copia e cola aqui, um verso por linha. Na primeira vez que ouvires a música, a app pede-te para marcares quando começa cada verso: carregas na barra de espaço ao ritmo da música e fica guardado.</p>
+              <h4>Letra com tempos (.lrc)</h4>
+              <p>Um ficheiro .lrc já traz o tempo de cada verso, por isso começas a praticar logo. Muitos leitores de música guardam letras neste formato. Se o .lrc trouxer o artista e o álbum, a app preenche esses campos sozinha.</p>
+              <h4>Ficheiros de música do computador</h4>
+              <p>Ficam guardados só neste browser. Noutro dispositivo, a app pede-te o ficheiro outra vez; o progresso sincroniza na mesma.</p>
+            </div>
           </details>
           <details class="help">
             <summary>Adicionar tradução (legendas duplas)</summary>
@@ -317,8 +469,8 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
     </section>
 
     <section class="panel" id="libPanel" aria-labelledby="libTitle">
-      <h2 id="libTitle">A tua biblioteca</h2>
-      <p class="sub">Os vídeos guardam-se neste browser. Podes repeti-los sempre que quiseres.</p>
+      <h2 id="libTitle">Os teus vídeos</h2>
+      <p class="sub">Podes repeti-los sempre que quiseres. As músicas ficam na secção <a href="#musicas" data-view="musicas">Músicas</a>.</p>
       <div class="lib-list" id="libList"></div>
     </section>
   </div>
@@ -326,10 +478,58 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
   <p class="foot">Sem conta, os vídeos, as legendas e o progresso ficam só neste browser. Com conta, ficam também guardados na nuvem e aparecem em todos os teus dispositivos. <a href="/privacidade">Privacidade</a></p>
 </main>
 
+<!-- ================= MÚSICAS ================= -->
+<main class="wrap view" id="musicView" hidden>
+  <div class="vhead">
+    <div><h1>Músicas</h1><p class="sub">Organizadas por artista e álbum. A percentagem é a das palavras que escreveste certas à primeira, sem dicas.</p></div>
+    <button class="btn primary" id="newMusicBtn">Nova música</button>
+  </div>
+  <div id="musicList"></div>
+</main>
+
+<!-- ================= REVER ================= -->
+<main class="wrap view" id="reviewView" hidden>
+  <div class="vhead">
+    <div><h1>Rever erros</h1><p class="sub">As frases em que erraste ou pediste uma dica voltam para treinares. Quando acertas, aparecem cada vez mais espaçadas; quando falhas, voltam mais cedo.</p></div>
+  </div>
+  <section class="panel" id="reviewDue"></section>
+  <div class="grid2">
+    <section class="panel"><h2>Palavras que mais falhas</h2><p class="sub">Contam quando erraste uma letra ou pediste dica.</p><ol class="replist" id="repWords"></ol></section>
+    <section class="panel"><h2>Trocas mais frequentes</h2><p class="sub">O que escreveste no lugar da palavra certa.</p><ol class="replist" id="repSwaps"></ol></section>
+  </div>
+</main>
+
+<!-- ================= PALAVRAS ================= -->
+<main class="wrap view" id="wordsView" hidden>
+  <div class="vhead">
+    <div><h1>Palavras</h1><p class="sub">Durante a prática, carrega numa palavra da transcrição para ver o significado e guardá-la aqui, com a frase onde a ouviste.</p></div>
+    <label class="field searchf"><span>Procurar</span><input class="input" id="wordSearch" type="search" placeholder="Procurar palavra"></label>
+  </div>
+  <div class="word-list" id="wordList"></div>
+</main>
+
+<!-- ================= PROGRESSO ================= -->
+<main class="wrap view" id="progressView" hidden>
+  <div class="vhead">
+    <div><h1>Progresso</h1><p class="sub">Os dias em que praticaste e como estás a evoluir. Sem metas nem contagem de dias seguidos: praticas quando te apetecer, o tempo que quiseres.</p></div>
+  </div>
+  <section class="panel">
+    <h2>Atividade</h2>
+    <div class="statrow" id="actSummary"></div>
+    <div class="heatwrap"><div class="heatmonths" id="heatMonths"></div><div class="heat" id="heatmap" role="img" aria-label="Calendário de atividade"></div></div>
+    <p class="hint legend">Menos <i data-l="0"></i><i data-l="1"></i><i data-l="2"></i><i data-l="3"></i><i data-l="4"></i> Mais tempo de prática</p>
+  </section>
+  <div class="grid2">
+    <section class="panel"><h2>Palavras por minuto</h2><div class="chart" id="chartWpm"></div></section>
+    <section class="panel"><h2>Precisão</h2><div class="chart" id="chartAcc"></div></section>
+  </div>
+  <section class="panel" style="margin-top:20px"><h2>Últimas sessões</h2><div id="sessList"></div></section>
+</main>
+
 <!-- ================= PRÁTICA ================= -->
 <main class="wrap" id="player" hidden>
   <div class="ptop">
-    <button class="btn small" id="backBtn">← Biblioteca</button>
+    <button class="btn small" id="backBtn">← Voltar</button>
     <h2 id="pTitle"></h2>
     <div class="seg" role="group" aria-label="Modo" style="margin:0">
       <button type="button" data-mode="type">Escrever junto</button>
@@ -356,9 +556,30 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
   <div class="pgrid">
     <div>
       <div class="stage">
+        <div class="cover" id="cover" hidden>
+          <div><h2 id="coverTitle"></h2><p id="coverArtist"></p>
+            <div id="coverNeed" hidden>
+              <p class="cover-msg">O ficheiro desta música não está neste browser.</p>
+              <label class="btn filebtn"><input type="file" id="coverFile" accept="audio/*,video/*">Escolher o ficheiro</label>
+            </div>
+          </div>
+        </div>
         <div id="stageHost"></div>
         <div class="overlay" id="overlay"></div>
       </div>
+
+      <section class="typebox" id="markBox" hidden>
+        <h2 class="mark-h">Marcar os tempos da letra</h2>
+        <p class="sub">Esta letra ainda não tem tempos. Carrega em <b>Começar</b> e, sempre que um verso começa a ser cantado, carrega em <b>Marcar verso</b> ou na barra de espaço. Só precisas de fazer isto uma vez.</p>
+        <div class="markcur" id="markCur"></div>
+        <div class="marknext" id="markNext"></div>
+        <div class="prow">
+          <button class="btn primary" id="markStart">Começar</button>
+          <button class="btn" id="markBtn" disabled>Marcar verso</button>
+          <button class="btn" id="markUndo" disabled>Desfazer</button>
+        </div>
+        <p class="hint" id="markProg"></p>
+      </section>
 
       <section class="typebox" id="typebox">
         <div class="linewrap">
@@ -386,6 +607,7 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
 
     <aside class="side" aria-labelledby="trTitle">
       <header><h3 id="trTitle">Transcrição</h3><small id="trCount"></small></header>
+      <p class="hint side-hint">Carrega numa palavra para ver o significado.</p>
       <ol class="tlist" id="tlist"></ol>
     </aside>
   </div>
@@ -396,6 +618,7 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
     <h2 id="doneTitle">Vídeo concluído</h2>
     <p class="sub" id="doneSub"></p>
     <div class="big">
+      <div><b id="dWords">0%</b><small>palavras certas</small></div>
       <div><b id="dWpm">0</b><small>palavras/min</small></div>
       <div><b id="dAcc">0%</b><small>precisão</small></div>
     </div>
@@ -449,6 +672,8 @@ kbd{font-variation-settings:"MONO" 1;font-size:.78rem;background:var(--sunk);bor
   </div>
 </div>
 
+<div class="wpop" id="wpop" role="dialog" aria-label="Significado da palavra" hidden></div>
+
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -467,6 +692,26 @@ const saveLib = () => { localSave(); scheduleSync(); };
 let sb = null, user = null, syncT = null, syncing = false, syncAgain = false;
 let tomb = store.get('ecoa.deleted', {});   // vídeos apagados: id -> quando
 const saveTomb = () => store.set('ecoa.deleted', tomb);
+
+/* Registos sincronizados: sessões, atividade, frases para rever e palavras */
+const REC_KINDS = ['session', 'activity', 'card', 'word'];
+const rec = {};
+REC_KINDS.forEach(k => rec[k] = store.get('ecoa.rec.' + k, {}));   // id -> { d: dados, t: quando, x: apagado }
+const recSave = k => { store.set('ecoa.rec.' + k, rec[k]); scheduleSync(); };
+const recPut = (k, id, d) => { rec[k][id] = { d, t: Date.now() }; recSave(k); };
+const recDel = (k, id) => { if (rec[k][id]){ rec[k][id] = { d: null, t: Date.now(), x: 1 }; recSave(k); } };
+const recGet = (k, id) => (rec[k][id] && !rec[k][id].x) ? rec[k][id].d : null;
+const recAll = k => Object.entries(rec[k]).filter(([, v]) => !v.x && v.d).map(([id, v]) => ({ id, ...v.d }));
+const deviceId = store.get('ecoa.device', null) || (() => { const id = Math.random().toString(36).slice(2, 10); store.set('ecoa.device', id); return id; })();
+const dayKey = (d = new Date()) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+let actT = null;
+function addActivity(ms, n){
+  const day = dayKey(), id = deviceId + '|' + day;
+  const cur = recGet('activity', id) || { day, s: 0, n: 0 };
+  cur.s = Math.round((cur.s + ms / 1000) * 10) / 10; cur.n += n;
+  rec.activity[id] = { d: cur, t: Date.now() };
+  clearTimeout(actT); actT = setTimeout(() => recSave('activity'), 1500);
+}
 
 /* ============ Tema ============ */
 function applyTheme(){
@@ -583,6 +828,38 @@ function setSource(s){
   $('srcFileBtn').setAttribute('aria-pressed', s === 'file');
   $('srcYt').hidden = s !== 'yt'; $('srcFile').hidden = s !== 'file';
 }
+let kind = 'video';
+function setKind(k){
+  kind = k; const m = k === 'music';
+  $('kindVideoBtn').setAttribute('aria-pressed', !m); $('kindMusicBtn').setAttribute('aria-pressed', m);
+  $('impTitle').textContent = m ? 'Nova música' : 'Novo vídeo';
+  $('step1Title').textContent = m ? 'Escolhe a música' : 'Escolhe o vídeo';
+  $('ytLabel').textContent = m ? 'Link do clipe no YouTube' : 'Link do vídeo';
+  $('vidFile').accept = m ? 'audio/*,video/*' : 'video/*';
+  $('fileBtnText').textContent = m ? 'Escolher ficheiro de música' : 'Escolher vídeo';
+  $('fileHint').textContent = m ? 'A música fica guardada neste browser. Noutro dispositivo, a app pede-te o ficheiro outra vez.' : 'Vídeos do computador não ficam na biblioteca.';
+  $('videoFields').hidden = m; $('musicFields').hidden = !m;
+  $('step2Title').textContent = m ? 'Junta a letra' : 'Junta as legendas';
+  $('subBtnText').textContent = m ? 'Carregar .lrc ou .txt' : 'Carregar .srt ou .vtt';
+  $('subLabel').textContent = m ? 'Ou cola a letra, um verso por linha (com ou sem tempos)' : 'Ou cola as legendas ou a transcrição do YouTube';
+  $('subText').placeholder = m ? 'Primeiro verso da música\nSegundo verso da música\n…' : '0:00\nHello everyone and welcome back\n0:04\ntoday we\'re talking about sleep';
+  $('helpVideo').hidden = m; $('helpMusic').hidden = !m;
+}
+$('kindVideoBtn').onclick = () => setKind('video');
+$('kindMusicBtn').onclick = () => setKind('music');
+function lrcMeta(txt){
+  const get = k => ((txt || '').match(new RegExp('^\\[' + k + ':(.*)\\]\\s*$', 'mi')) || [])[1]?.trim() || '';
+  const fill = (id, v) => { if (v && !$(id).value.trim()) $(id).value = v; };
+  fill('mTitle', get('ti')); fill('mArtist', get('ar')); fill('mAlbum', get('al'));
+}
+$('subText').addEventListener('input', () => { if (kind === 'music') lrcMeta($('subText').value); });
+function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+async function readTags(file){
+  try {
+    if (!window.jsmediatags) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js');
+    return await new Promise(res => window.jsmediatags.read(file, { onSuccess: t => res(t.tags || {}), onError: () => res({}) }));
+  } catch(e){ return {}; }
+}
 $('srcYtBtn').onclick = () => setSource('yt');
 $('srcFileBtn').onclick = () => setSource('file');
 if (location.protocol === 'file:') $('fileProto').hidden = false;
@@ -592,12 +869,22 @@ function readInto(fileInput, textarea, nameEl){
   fileInput.onchange = () => {
     const f = fileInput.files[0]; if (!f) return;
     nameEl.textContent = f.name;
-    const r = new FileReader(); r.onload = () => textarea.value = r.result; r.readAsText(f);
+    const r = new FileReader(); r.onload = () => { textarea.value = r.result; if (kind === 'music' && textarea.id === 'subText') lrcMeta(r.result); }; r.readAsText(f);
   };
 }
 readInto($('subFile'), $('subText'), $('subName'));
 readInto($('trFile'), $('trText'), $('trName'));
-$('vidFile').onchange = () => $('vidName').textContent = $('vidFile').files[0]?.name || '';
+$('vidFile').onchange = async () => {
+  const f = $('vidFile').files[0];
+  $('vidName').textContent = f ? f.name : '';
+  if (!f || kind !== 'music') return;
+  const base = f.name.replace(/\.[^.]+$/, ''), parts = base.split(' - ');
+  const t = await readTags(f);
+  const fill = (id, v) => { if (v && !$(id).value.trim()) $(id).value = String(v).trim(); };
+  fill('mTitle', t.title || (parts.length > 1 ? parts.slice(1).join(' - ') : base));
+  fill('mArtist', t.artist || (parts.length > 1 ? parts[0] : ''));
+  fill('mAlbum', t.album);
+};
 
 const DEMO_SUBS = `1
 00:00:00,500 --> 00:00:03,000
@@ -623,37 +910,62 @@ function ytId(url){
   return m ? m[1] : null;
 }
 
-$('startBtn').onclick = () => {
+$('startBtn').onclick = async () => {
   const err = m => $('err').textContent = m;
   err('');
   const subs = $('subText').value;
-  if (!parseAny(subs).length) return err('Não foram encontradas legendas com tempos. Carrega um ficheiro .srt/.vtt ou cola a transcrição do YouTube.');
-  const mode = document.querySelector('input[name=mode]:checked').value;
-  settings.mode = mode; saveSettings();
-  const title = $('title').value.trim();
+  const timed = parseAny(subs).length > 0;
+  const plain = lyricLines(subs).length > 0;
+  const m = kind === 'music';
+  if (!timed && !(m && plain)) return err(m ? 'Cola a letra da música ou carrega um ficheiro .lrc.' : 'Não foram encontradas legendas com tempos. Carrega um ficheiro .srt/.vtt ou cola a transcrição do YouTube.');
+  settings.mode = document.querySelector('input[name=mode]:checked').value; saveSettings();
+  let music = null;
+  if (m){
+    const t = $('mTitle').value.trim(), a = $('mArtist').value.trim();
+    if (!t || !a) return err('Escreve o nome da música e do artista.');
+    music = { title: t, artist: a, album: $('mAlbum').value.trim(), attempts: [], best: 0 };
+  }
+  const base = { id: 'v' + Date.now(), subs, trans: $('trText').value, created: Date.now(), last: Date.now(), prog: { idx: 0, done: [], completed: false, ws: {} } };
+  if (music) base.music = music;
   if (source === 'yt'){
     const id = ytId($('ytUrl').value);
     if (!id) return err('O link do YouTube não é válido. Copia o endereço completo do vídeo.');
-    const item = { id: 'v' + Date.now(), kind: 'yt', ytId: id, title: title || 'Vídeo do YouTube',
-      subs, trans: $('trText').value, created: Date.now(), last: Date.now(), prog: { idx: 0, done: [], completed: false } };
-    lib.unshift(item); saveLib(); renderLib();
-    openItem(item);
+    const it = { ...base, kind: 'yt', ytId: id, title: m ? music.title : ($('title').value.trim() || 'Vídeo do YouTube') };
+    lib.unshift(it); saveLib(); openItem(it);
   } else {
     const f = $('vidFile').files[0];
-    if (!f) return err('Escolhe um ficheiro de vídeo.');
-    openItem({ id: 'tmp', kind: 'file', file: f, title: title || f.name, subs, trans: $('trText').value,
-      prog: { idx: 0, done: [], completed: false } });
+    if (!f) return err(m ? 'Escolhe o ficheiro da música.' : 'Escolhe um ficheiro de vídeo.');
+    if (m){
+      const it = { ...base, kind: 'audio', title: music.title, fileName: f.name };
+      try { await idb.put(it.id, f); } catch(e){ return err('Não foi possível guardar o ficheiro neste browser.'); }
+      lib.unshift(it); saveLib(); openItem(it);
+    } else {
+      openItem({ ...base, id: 'tmp', kind: 'file', file: f, title: $('title').value.trim() || f.name });
+    }
   }
+};
+function lyricLines(txt){
+  return (txt || '').replace(/\r/g, '').split('\n').map(l => l.trim())
+    .filter(l => l && !/^\[[a-z]+:.*\]$/i.test(l) && !/^\[[^\]]*\]$/.test(l) && !/^\(.*\)$/.test(l));
+}
+
+/* Ficheiros de música guardados no browser (IndexedDB) */
+const idb = {
+  db: null,
+  open(){ return this.db || (this.db = new Promise((res, rej) => { const r = indexedDB.open('ecoa', 1); r.onupgradeneeded = () => r.result.createObjectStore('audio'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); })); },
+  async put(k, v){ const db = await this.open(); return new Promise((res, rej) => { const tx = db.transaction('audio', 'readwrite'); tx.objectStore('audio').put(v, k); tx.oncomplete = res; tx.onerror = () => rej(tx.error); }); },
+  async get(k){ const db = await this.open(); return new Promise((res, rej) => { const q = db.transaction('audio').objectStore('audio').get(k); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); }); },
+  async del(k){ const db = await this.open(); return new Promise(res => { const tx = db.transaction('audio', 'readwrite'); tx.objectStore('audio').delete(k); tx.oncomplete = res; tx.onerror = res; }); }
 };
 
 function renderLib(){
   const list = $('libList'); list.replaceChildren();
-  if (!lib.length){
+  if (!lib.some(x => !x.music)){
     const e = document.createElement('div'); e.className = 'empty';
     e.textContent = 'Ainda não tens vídeos. Junta o primeiro à esquerda e ele aparece aqui, com o teu progresso.';
     list.appendChild(e); return;
   }
-  for (const it of lib){
+  for (const it of lib.filter(x => !x.music)){
     const total = parseAny(it.subs).length || 1;
     const pct = Math.round(it.prog.done.length / total * 100);
     const wrap = document.createElement('div');
@@ -676,7 +988,7 @@ function renderLib(){
     const act = document.createElement('div'); act.className = 'lib-actions';
     const del = document.createElement('button'); del.className = 'del'; del.textContent = 'Remover';
     del.onclick = () => {
-      if (del.dataset.armed){ lib = lib.filter(x => x !== it); tomb[it.id] = Date.now(); saveTomb(); saveLib(); renderLib(); return; }
+      if (del.dataset.armed){ removeItem(it); renderLib(); return; }
       del.dataset.armed = 1; del.textContent = 'Carrega outra vez para remover';
       setTimeout(() => { if (del.isConnected){ delete del.dataset.armed; del.textContent = 'Remover'; } }, 3000);
     };
@@ -719,7 +1031,7 @@ async function makeYt(id){
         onReady: () => res({
           play: () => p.playVideo(), pause: () => p.pauseVideo(),
           seek: t => p.seekTo(t, true), time: () => p.getCurrentTime() || 0,
-          rate: r => p.setPlaybackRate(r), destroy: () => p.destroy()
+          rate: r => p.setPlaybackRate(r), duration: () => p.getDuration() || 0, destroy: () => p.destroy()
         }),
         onError: e => toast(e.data === 101 || e.data === 150
           ? 'O dono deste vídeo não permite que seja reproduzido fora do YouTube. Experimenta outro vídeo.'
@@ -728,54 +1040,185 @@ async function makeYt(id){
     });
   });
 }
-function makeFile(file){
-  const v = document.createElement('video');
+function makeFile(file, tag = 'video'){
+  const v = document.createElement(tag);
   v.controls = true; v.playsInline = true; v.src = URL.createObjectURL(file);
   $('stageHost').replaceChildren(v);
   return Promise.resolve({
     play: () => v.play().catch(() => {}), pause: () => v.pause(),
     seek: t => { v.currentTime = t; }, time: () => v.currentTime,
-    rate: r => { v.playbackRate = r; },
+    rate: r => { v.playbackRate = r; }, duration: () => v.duration || 0,
     destroy: () => { v.pause(); URL.revokeObjectURL(v.src); v.remove(); }
   });
 }
+async function makeAudio(it){
+  const blob = await idb.get(it.id).catch(() => null);
+  $('cover').hidden = false;
+  $('coverTitle').textContent = it.music ? it.music.title : it.title;
+  $('coverArtist').textContent = it.music ? [it.music.artist, it.music.album].filter(Boolean).join(' — ') : '';
+  $('coverNeed').hidden = !!blob; $('cover').classList.toggle('need', !blob);
+  if (!blob) return null;
+  return makeFile(blob, 'audio');
+}
+$('coverFile').onchange = async () => {
+  const f = $('coverFile').files[0]; $('coverFile').value = '';
+  if (!f || !item) return;
+  try { await idb.put(item.id, f); } catch(e){ toast('Não foi possível guardar o ficheiro neste browser.'); return; }
+  item.fileName = f.name; openItem(item);
+};
 
 /* ============ Sessão de prática ============ */
 let item = null, cues = [], idx = 0, mode = 'type', prevLen = 0, pauseAt = null, tick = null, solving = false;
 let st;
-const resetStats = () => st = { keys: 0, errors: 0, chars: 0, ms: 0, last: 0, hints: 0 };
+const resetStats = () => st = { keys: 0, errors: 0, chars: 0, ms: 0, last: 0, hints: 0, n: 0, wT: 0, wOk: 0 };
+let review = null;    // revisão: { groups: [{ vid, idxs }], g, done: Set, ok, total }
+let marking = null;   // marcar tempos da letra: { lines, times, k, started }
+let sess = null;      // sessão de prática atual
+let cueErr = new Set(), cueSwaps = new Map();
+const INTERVALS = [0, 1, 3, 7, 14, 30];   // dias até voltar a rever, por nível
+const DAY = 86400000;
+const cleanW = w => (w || '').toLowerCase().replace(/[‘’]/g, "'").replace(/[^\p{L}\p{N}']/gu, '').replace(/^'+|'+$/g, '');
+const wordAt = (t, i) => (t.slice(0, Math.min(i, t.length)).match(/ /g) || []).length;
+const itemName = it => it.music ? it.music.title : it.title;
 
-async function openItem(it){
-  item = it; it.last = Date.now(); if (it.kind === 'yt') saveLib();
-  cues = parseAny(it.subs);
-  attachTranslation(cues, parseAny(it.trans || ''));
+async function openItem(it, opts = {}){
+  if (!it) return;
+  if (!$('player').hidden) leavePlayer(false);
+  item = it; it.last = Date.now(); if (it.kind !== 'file') saveLib();
+  review = opts.review || null;
+  const all = parseAny(it.subs).map((c, i) => ({ ...c, oi: i }));
+  attachTranslation(all, parseAny(it.trans || ''));
+  cues = review ? review.groups[review.g].idxs.map(i => all[i]).filter(Boolean) : all;
+  if (review) review.done = new Set();
+  if (!review && all.length && it.prog.done.length >= all.length){
+    it.prog = { idx: 0, done: [], completed: true, ws: {} };   // já concluído: começa uma nova tentativa
+  }
+  marking = null;
+  if (!all.length && it.music) startMarking(it);
   retarget();
   resetStats();
-  $('pTitle').textContent = it.title;
-  $('home').hidden = true; $('player').hidden = false; scrollTo(0, 0);
+  sess = { id: 's' + Date.now().toString(36) + deviceId, t: Date.now() };
+  $('pTitle').textContent = (review ? 'Revisão: ' : '') + (it.music ? it.music.title + ' — ' + it.music.artist : it.title);
+  showView('player');
   syncSettingsUI();
   setMode(settings.mode, true);
   buildTranscript();
-  goTo(Math.min(it.prog.idx || 0, cues.length - 1), false);
-  if (P){ try { P.destroy(); } catch(e){} P = null; }
-  $('stageHost').replaceChildren();
-  try { P = it.kind === 'yt' ? await makeYt(it.ytId) : await makeFile(it.file); }
-  catch(e){ toast(e.message); return; }
+  if (marking) renderMark();
+  else goTo(review ? 0 : Math.min(it.prog.idx || 0, cues.length - 1), false);
+  $('stageHost').replaceChildren(); $('cover').hidden = true;
+  let player = null;
+  try {
+    if (it.kind === 'yt') player = await makeYt(it.ytId);
+    else if (it.kind === 'audio') player = await makeAudio(it);
+    else player = await makeFile(it.file);
+  } catch(e){ toast(e.message); return; }
+  if (item !== it){ if (player) player.destroy(); return; }   // entretanto saíste deste vídeo
+  P = player;
+  if (!P) return;
   P.rate(settings.speed);
   clearInterval(tick); tick = setInterval(onTick, 60);
+  if (opts.at != null && !marking){ const k = cues.findIndex(c => c.oi === opts.at); if (k >= 0) goTo(k, true); }
+}
+
+function endSession(){
+  if (!sess || !item || !st || (!st.n && st.ms < 3000)) return;
+  recPut('session', sess.id, {
+    t: sess.t, vid: item.id, title: itemName(item),
+    kind: review ? 'review' : (item.music ? 'music' : 'video'),
+    wpm: wpm(), acc: acc(), words: wordPct(), n: st.n, s: Math.round(st.ms / 1000)
+  });
+}
+function leavePlayer(){
+  endSession(); sess = null;
+  clearInterval(tick); pauseAt = null; marking = null;
+  closeWord();
+  if (P){ try { P.destroy(); } catch(e){} P = null; }
+  $('stageHost').replaceChildren(); $('overlay').replaceChildren(); $('cover').hidden = true;
+  $('doneModal').hidden = true; lastOverlay = -2;
+}
+addEventListener('pagehide', () => { endSession(); clearTimeout(actT); REC_KINDS.forEach(k => store.set('ecoa.rec.' + k, rec[k])); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) endSession(); });
+
+/* Marcar os tempos de uma letra sem tempos */
+function startMarking(it){
+  const lines = lyricLines(it.subs);
+  marking = { lines, times: [], k: 0, started: false };
+  cues = lines.map((text, i) => ({ text, start: 0, end: 0, oi: i }));
+}
+function renderMark(){
+  const m = marking; if (!m) return;
+  $('markCur').textContent = m.k < m.lines.length ? m.lines[m.k] : 'Todos os versos marcados.';
+  $('markNext').textContent = m.lines[m.k + 1] || '';
+  $('markProg').textContent = m.started ? `${m.k} de ${m.lines.length} versos marcados` : `${m.lines.length} versos para marcar`;
+  $('markBtn').disabled = !m.started || m.k >= m.lines.length;
+  $('markUndo').disabled = !m.k;
+  $('markStart').textContent = m.started ? 'Recomeçar' : 'Começar';
+  markTranscript(m.k);
+}
+$('markStart').onclick = () => {
+  if (!P){ toast('Espera que a música carregue.'); return; }
+  Object.assign(marking, { started: true, k: 0, times: [] });
+  P.seek(0); P.play(); renderMark(); document.activeElement.blur();
+};
+function markLine(){
+  const m = marking;
+  if (!m || !m.started || m.k >= m.lines.length || !P) return;
+  m.times[m.k] = Math.max(0, P.time() - 0.3); m.k++;
+  renderMark();
+  if (m.k >= m.lines.length) finishMarking();
+}
+$('markBtn').onclick = markLine;
+$('markUndo').onclick = () => { if (marking && marking.k){ marking.k--; marking.times.length = marking.k; renderMark(); } };
+function finishMarking(){
+  const m = marking, it = item;
+  const ts = t => { const mm = Math.floor(t / 60), ss = (t % 60).toFixed(2).padStart(5, '0'); return '[' + String(mm).padStart(2, '0') + ':' + ss + ']'; };
+  const endT = (P && P.duration()) || (m.times[m.times.length - 1] + 6);
+  it.subs = m.lines.map((l, i) => ts(m.times[i]) + l).join('\n') + '\n' + ts(Math.max(endT, m.times[m.times.length - 1] + 2));
+  it.last = Date.now(); saveLib();
+  P && P.pause();
+  toast('Tempos guardados. Já podes praticar esta música.');
+  marking = null;
+  openItem(it);
 }
 function retarget(){ cues.forEach(c => c.target = normTarget(c.text)); }
 
-function goHome(){
-  clearInterval(tick); pauseAt = null;
-  if (P){ try { P.destroy(); } catch(e){} P = null; }
-  $('stageHost').replaceChildren(); $('overlay').replaceChildren();
-  $('player').hidden = true; $('doneModal').hidden = true; $('home').hidden = false;
-  renderLib(); scrollTo(0, 0);
+function goHome(){ showView('home'); }
+$('backBtn').onclick = () => showView(review ? 'rever' : (item && item.music ? 'musicas' : 'home'));
+$('logo').onclick = () => showView('home');
+const VIEWS = { home: 'home', musicas: 'musicView', rever: 'reviewView', palavras: 'wordsView', progresso: 'progressView', player: 'player' };
+let curView = 'home';
+function showView(v){
+  if (!VIEWS[v]) v = 'home';
+  if (v !== 'player' && !$('player').hidden){ leavePlayer(); review = null; }
+  curView = v;
+  for (const [k, id] of Object.entries(VIEWS)) $(id).hidden = k !== v;
+  document.querySelectorAll('.mainnav [data-view]').forEach(a => a.setAttribute('aria-current', a.dataset.view === v ? 'page' : 'false'));
+  if (v !== 'player' && !location.hash.includes('=')){
+    const h = v === 'home' ? '' : '#' + v;
+    if (location.hash !== h) history.replaceState(null, '', h || location.pathname);
+  }
+  refreshView();
+  scrollTo(0, 0);
 }
-$('backBtn').onclick = goHome;
-$('logo').onclick = goHome;
-$('navLib').onclick = () => { goHome(); $('libPanel').scrollIntoView({ behavior: 'smooth' }); };
+function refreshView(){
+  if (curView === 'home') renderLib();
+  else if (curView === 'musicas') renderMusic();
+  else if (curView === 'rever') renderReview();
+  else if (curView === 'palavras') renderWords();
+  else if (curView === 'progresso') renderProgress();
+  updateBadge();
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[data-view]');
+  if (!a) return;
+  e.preventDefault(); showView(a.dataset.view);
+});
+addEventListener('hashchange', () => { const h = location.hash.slice(1); if (!h.includes('=')) showView(h || 'home'); });
+function removeItem(it){
+  lib = lib.filter(x => x !== it);
+  tomb[it.id] = Date.now(); saveTomb(); saveLib();
+  if (it.kind === 'audio') idb.del(it.id);
+}
 
 /* Modos */
 document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => setMode(b.dataset.mode));
@@ -783,7 +1226,8 @@ function setMode(m, initial){
   const fromWatch = mode === 'watch';
   mode = m; settings.mode = m; saveSettings();
   document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
-  $('typebox').hidden = m === 'watch';
+  $('typebox').hidden = m === 'watch' || !!marking;
+  $('markBox').hidden = !marking;
   $('tlist').classList.toggle('hide', m === 'dict');
   $('tlist').classList.toggle('watch', m === 'watch');
   $('hintBtn').hidden = false;
@@ -804,22 +1248,36 @@ function buildTranscript(){
   const ol = $('tlist'); ol.replaceChildren();
   cues.forEach((c, i) => {
     const li = document.createElement('li'); li.dataset.i = i;
-    const tm = document.createElement('time'); tm.textContent = fmt(c.start);
+    const tm = document.createElement('time'); tm.textContent = marking ? '–' : fmt(c.start);
     const d = document.createElement('div');
-    const tx = document.createElement('span'); tx.className = 'tx'; tx.textContent = c.text;
+    const tx = document.createElement('span'); tx.className = 'tx';
+    for (const part of c.text.split(/(\s+)/)){
+      if (!part) continue;
+      if (/^\s+$/.test(part)) tx.append(part);
+      else { const w = document.createElement('span'); w.className = 'wd'; w.textContent = part; tx.appendChild(w); }
+    }
     d.appendChild(tx);
     if (c.trans){ const tt = document.createElement('span'); tt.className = 'tt'; tt.textContent = c.trans; tt.hidden = !settings.trans; d.appendChild(tt); }
     li.append(tm, d);
-    li.onclick = () => {
+    li.onclick = e => {
+      const w = e.target.closest('.wd');
+      if (w && !marking){ e.stopPropagation(); openWord(w, c, i); return; }
+      if (marking) return;
       if (mode === 'watch'){ P && (P.seek(c.start), P.play()); }
       else goTo(i, true);
     };
     ol.appendChild(li);
   });
-  $('trCount').textContent = cues.length + ' frases';
+  $('trCount').textContent = cues.length + (item && item.music ? ' versos' : ' frases');
 }
+function doneSet(){
+  if (marking) return new Set(Array.from({ length: marking.k }, (_, i) => i));
+  if (review) return review.done;
+  return new Set(item.prog.done);
+}
+const doneCount = () => doneSet().size;
 function markTranscript(activeI = idx){
-  const done = new Set(item.prog.done);
+  const done = doneSet();
   const ol = $('tlist');
   [...ol.children].forEach((li, i) => {
     li.classList.toggle('done', done.has(i));
@@ -871,9 +1329,10 @@ function goTo(i, play){
   if (!cues.length) return;
   i = Math.max(0, Math.min(i, cues.length - 1));
   idx = i; prevLen = 0; solving = false;
+  cueErr = new Set(); cueSwaps = new Map();
   $('typing').value = '';
   $('line').classList.remove('solved');
-  item.prog.idx = i; persist();
+  if (!review){ item.prog.idx = i; persist(); }
   renderLine(); markTranscript(); updateStats();
   if (play && mode !== 'watch') playCue(i);
   if (mode !== 'watch' && matchMedia('(pointer:fine)').matches) $('typing').focus();
@@ -913,9 +1372,17 @@ typing.addEventListener('input', () => {
   const typed = normTyped(typing.value);
   const now = performance.now();
   if (typed.length > prevLen){
-    if (st.last && now - st.last < 5000) st.ms += now - st.last;
+    if (st.last && now - st.last < 5000){ const d = now - st.last; st.ms += d; addActivity(d, 0); }
     st.last = now;
-    for (let i = prevLen; i < typed.length; i++){ st.keys++; if (typed[i] !== target[i]) st.errors++; }
+    for (let i = prevLen; i < typed.length; i++){
+      st.keys++;
+      if (typed[i] !== target[i]){ st.errors++; if (i < target.length) cueErr.add(wordAt(target, i)); }
+      if (i < target.length && (target[i] === ' ' || i === target.length - 1)){
+        const end = target[i] === ' ' ? i : i + 1, start = target.lastIndexOf(' ', end - 1) + 1;
+        const exp = target.slice(start, end), got = typed.slice(start, end);
+        if (got !== exp) cueSwaps.set(exp, got);
+      }
+    }
   }
   prevLen = typed.length;
   renderLine(); updateStats();
@@ -924,19 +1391,77 @@ typing.addEventListener('input', () => {
 
 function solved(){
   solving = true;
-  st.chars += cues[idx].target.length + 1;
-  if (!item.prog.done.includes(idx)) item.prog.done.push(idx);
-  item.prog.wpm = wpm(); item.prog.acc = acc();
-  persist();
+  const c = cues[idx];
+  const words = c.target.split(' ').length, bad = Math.min(cueErr.size, words);
+  st.chars += c.target.length + 1; st.n++; st.wT += words; st.wOk += words - bad;
+  addActivity(0, 1);
+  if (review){
+    review.done.add(idx); if (!bad) review.ok++;
+    noteCard(c, !bad);
+  } else {
+    if (!item.prog.done.includes(idx)) item.prog.done.push(idx);
+    (item.prog.ws || (item.prog.ws = {}))[c.oi] = [words - bad, words];
+    item.prog.wpm = wpm(); item.prog.acc = acc();
+    if (bad) noteCard(c, false);
+    persist();
+  }
   $('line').classList.add('solved'); renderLine(); markTranscript(); updateStats();
   setTimeout(() => {
-    if (item.prog.done.length >= cues.length){ finish(); return; }
-    if (idx >= cues.length - 1){
-      const first = cues.findIndex((_, i) => !item.prog.done.includes(i));
-      goTo(first, true); return;
-    }
-    goTo(idx + 1, mode === 'dict' || settings.pause);
+    if (!item || $('player').hidden) return;
+    const ds = doneSet();
+    if (ds.size >= cues.length){ review ? nextReviewGroup() : finish(); return; }
+    let next = idx + 1;
+    while (next < cues.length && ds.has(next)) next++;
+    if (next >= cues.length) next = cues.findIndex((_, i) => !ds.has(i));
+    goTo(next, mode === 'dict' || settings.pause || !!review);
   }, 380);
+}
+
+/* Frases para rever (repetição espaçada) */
+function noteCard(c, ok){
+  const id = item.id + ':' + c.oi;
+  const prev = recGet('card', id);
+  if (ok && !prev) return;
+  const d = prev || { vid: item.id, i: c.oi, text: c.text, title: itemName(item), box: 0, due: 0, misses: 0, words: {}, swaps: {}, created: Date.now() };
+  if (ok){
+    d.box++;
+    if (d.box >= INTERVALS.length) d.mastered = true; else d.due = Date.now() + INTERVALS[d.box] * DAY;
+  } else {
+    d.box = 0; d.mastered = false; d.due = Date.now(); d.misses++;
+    const ws = c.target.split(' ');
+    for (const wi of cueErr){ const w = cleanW(ws[wi]); if (w) d.words[w] = (d.words[w] || 0) + 1; }
+    for (const [e, t] of cueSwaps){ const a = cleanW(e), b = cleanW(t); if (a && b && a !== b) d.swaps[a + '→' + b] = (d.swaps[a + '→' + b] || 0) + 1; }
+  }
+  d.last = Date.now();
+  recPut('card', id, d);
+}
+const dueCards = () => recAll('card').filter(c => !c.mastered && c.due <= Date.now() && lib.some(v => v.id === c.vid));
+function startReview(){
+  const due = dueCards(); if (!due.length) return;
+  const by = new Map();
+  for (const c of due){ if (!by.has(c.vid)) by.set(c.vid, []); by.get(c.vid).push(c.i); }
+  const groups = [...by].map(([vid, idxs]) => ({ vid, idxs: idxs.sort((a, b) => a - b) }));
+  const r = { groups, g: 0, ok: 0, total: due.length };
+  openItem(lib.find(v => v.id === groups[0].vid), { review: r });
+}
+function nextReviewGroup(){
+  const r = review;
+  endSession(); sess = null;
+  r.g++;
+  if (r.g >= r.groups.length){
+    P && P.pause();
+    $('doneTitle').textContent = 'Revisão concluída';
+    $('doneSub').textContent = `Acertaste ${r.ok} de ${r.total} frases sem erros nem dicas. As que falhaste voltam na próxima revisão.`;
+    $('dWords').textContent = wordPct() + '%'; $('dWpm').textContent = wpm(); $('dAcc').textContent = acc() + '%';
+    $('againBtn').hidden = true; $('doneLibBtn').textContent = 'Voltar a Rever erros';
+    $('doneModal').hidden = false; $('doneLibBtn').focus();
+    return;
+  }
+  openItem(lib.find(v => v.id === r.groups[r.g].vid), { review: r });
+}
+function updateBadge(){
+  const n = dueCards().length, b = $('revBadge');
+  b.hidden = !n; b.textContent = n > 99 ? '99+' : n;
 }
 
 function hint(word){
@@ -945,6 +1470,7 @@ function hint(word){
   let k = 0; while (k < typed.length && typed[k] === t[k]) k++;
   let end = k + 1;
   if (word){ while (end < t.length && t[end] !== ' ') end++; }
+  cueErr.add(wordAt(t, Math.min(k, t.length - 1)));
   typing.value = t.slice(0, Math.min(end, t.length));
   prevLen = typing.value.length; st.hints++;
   renderLine(); updateStats();
@@ -954,27 +1480,39 @@ function hint(word){
 
 function wpm(){ const m = st.ms / 60000; return m > 0.02 ? Math.round(st.chars / 5 / m) : 0; }
 function acc(){ return st.keys ? Math.max(0, Math.round((1 - st.errors / st.keys) * 100)) : 100; }
+function wordPct(){ return st.wT ? Math.round(st.wOk / st.wT * 100) : 100; }
 function updateStats(){
   $('stWpm').textContent = wpm();
   $('stAcc').textContent = acc() + '%';
   $('stHints').textContent = st.hints;
-  $('stProg').textContent = Math.round(item.prog.done.length / cues.length * 100) + '%';
+  $('stProg').textContent = (cues.length ? Math.round(doneCount() / cues.length * 100) : 0) + '%';
 }
-function persist(){ if (item && item.kind === 'yt'){ item.last = Date.now(); saveLib(); } }
+function persist(){ if (item && item.kind !== 'file'){ item.last = Date.now(); saveLib(); } }
 
 function finish(){
-  item.prog.completed = true; persist();
+  item.prog.completed = true;
+  let score = wordPct();
+  const ws = Object.values(item.prog.ws || {});
+  if (ws.length){ let ok = 0, tot = 0; for (const [a, b] of ws){ ok += a; tot += b; } if (tot) score = Math.round(ok / tot * 100); }
+  if (item.music){
+    (item.music.attempts || (item.music.attempts = [])).push({ t: Date.now(), words: score, acc: acc(), wpm: wpm() });
+    item.music.best = Math.max(item.music.best || 0, score);
+  }
+  persist(); endSession();
   P && P.pause();
-  $('dWpm').textContent = wpm(); $('dAcc').textContent = acc() + '%';
+  $('doneTitle').textContent = item.music ? 'Música concluída' : 'Vídeo concluído';
+  $('dWords').textContent = score + '%'; $('dWpm').textContent = wpm(); $('dAcc').textContent = acc() + '%';
   const s = Math.round(st.ms / 1000);
-  $('doneSub').textContent = `Escreveste as ${cues.length} frases em ${Math.floor(s / 60)} min ${s % 60} s, com ${st.hints} dicas.`;
+  $('doneSub').textContent = `Escreveste ${cues.length} ${item.music ? 'versos' : 'frases'} em ${Math.floor(s / 60)} min ${s % 60} s, com ${st.hints} dicas.`;
+  $('againBtn').hidden = false; $('doneLibBtn').textContent = item.music ? 'Voltar às músicas' : 'Voltar aos vídeos';
   $('doneModal').hidden = false; $('againBtn').focus();
 }
 $('againBtn').onclick = () => {
-  item.prog = { idx: 0, done: [], completed: item.prog.completed };
-  resetStats(); persist(); $('doneModal').hidden = true; markTranscript(); goTo(0, true);
+  item.prog = { idx: 0, done: [], completed: item.prog.completed, ws: {} };
+  resetStats(); sess = { id: 's' + Date.now().toString(36) + deviceId, t: Date.now() };
+  persist(); $('doneModal').hidden = true; markTranscript(); goTo(0, true);
 };
-$('doneLibBtn').onclick = goHome;
+$('doneLibBtn').onclick = () => { $('doneModal').hidden = true; $('backBtn').onclick(); };
 
 /* Controlos */
 $('replayBtn').onclick = () => { playCue(idx); typing.focus(); };
@@ -985,6 +1523,11 @@ $('line').onclick = () => typing.focus();
 
 document.addEventListener('keydown', e => {
   if ($('player').hidden || !$('doneModal').hidden) return;
+  if (!$('wpop').hidden && e.key === 'Escape'){ closeWord(); return; }
+  if (marking){
+    if (e.key === ' ' && !/INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)){ e.preventDefault(); markLine(); }
+    return;
+  }
   if (e.key === 'Escape'){ e.preventDefault(); if (mode === 'watch') return; playCue(idx); }
   else if (e.key === 'Tab' && document.activeElement === typing){ e.preventDefault(); hint(e.shiftKey); }
   else if (e.ctrlKey && e.key === 'ArrowRight'){ e.preventDefault(); goTo(idx + 1, true); }
@@ -1011,6 +1554,318 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
 }
 document.addEventListener('click', e => { const d = $('settings'); if (d.open && !d.contains(e.target)) d.open = false; });
+
+
+/* ============ Dicionário e palavras guardadas ============ */
+const dictCache = new Map();
+function wordForms(w){
+  const f = [w, w.replace(/'s$/, ''), w.replace(/ies$/, 'y'), w.replace(/es$/, ''), w.replace(/s$/, ''),
+    w.replace(/ied$/, 'y'), w.replace(/ed$/, ''), w.replace(/ed$/, 'e'), w.replace(/(.)\1ed$/, '$1'),
+    w.replace(/ing$/, ''), w.replace(/ing$/, 'e'), w.replace(/(.)\1ing$/, '$1'), w.replace(/ly$/, '')];
+  return [...new Set(f)].filter(x => x.length > 1);
+}
+async function fetchEntry(w){
+  const r = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(w));
+  if (!r.ok) return null;
+  const j = await r.json(); if (!Array.isArray(j) || !j.length) return null;
+  const e = j[0], ph = e.phonetics || [];
+  const defs = [];
+  for (const m of e.meanings || []){
+    for (const d of (m.definitions || []).slice(0, 2)){ if (defs.length < 3) defs.push({ pos: m.partOfSpeech, def: d.definition }); }
+  }
+  return { w: e.word || w, phon: e.phonetic || (ph.find(p => p.text) || {}).text || '', audio: (ph.find(p => p.audio) || {}).audio || '', defs };
+}
+function lookup(w){
+  if (!dictCache.has(w)) dictCache.set(w, (async () => {
+    for (const f of wordForms(w)){ try { const e = await fetchEntry(f); if (e) return e; } catch(err){ return { offline: true }; } }
+    return null;
+  })());
+  return dictCache.get(w);
+}
+const POS = { noun: 'nome', verb: 'verbo', adjective: 'adjetivo', adverb: 'advérbio', pronoun: 'pronome', preposition: 'preposição', conjunction: 'conjunção', interjection: 'interjeição', determiner: 'determinante', exclamation: 'exclamação' };
+function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function playAudio(url){ try { new Audio(url).play().catch(() => {}); } catch(e){} }
+
+let wpopFor = null;
+async function openWord(anchor, c, i){
+  const w = cleanW(anchor.textContent);
+  if (!w) return;
+  const pop = $('wpop'); wpopFor = w;
+  pop.replaceChildren(el('h3', '', w), el('p', 'hint', 'A procurar o significado…'));
+  pop.hidden = false; placePop(anchor);
+  const e = await lookup(w);
+  if (wpopFor !== w || pop.hidden) return;
+  pop.replaceChildren();
+  const head = el('header'); head.append(el('h3', '', e && !e.offline ? e.w : w));
+  if (e && e.phon) head.append(el('span', 'ph', e.phon));
+  if (e && e.audio){ const b = el('button', 'btn small', 'Ouvir'); b.type = 'button'; b.onclick = () => playAudio(e.audio); head.append(b); }
+  pop.append(head);
+  if (e && e.defs && e.defs.length){
+    const ol = el('ol', 'defs');
+    for (const d of e.defs){ const li = el('li'); li.append(el('i', '', POS[d.pos] || d.pos || ''), document.createTextNode(d.def)); ol.append(li); }
+    pop.append(ol);
+  } else pop.append(el('p', 'hint', e && e.offline ? 'Sem ligação ao dicionário. Podes guardar a palavra na mesma.' : 'Não encontrámos esta palavra no dicionário. Podes guardá-la na mesma.'));
+  const row = el('div', 'prow');
+  const key = cleanW(e && !e.offline ? e.w : w);
+  const saved = recGet('word', key);
+  const save = el('button', 'btn small primary', saved && saved.ctx.some(x => x.vid === item.id && x.i === c.oi) ? 'Guardada' : 'Guardar palavra');
+  save.type = 'button';
+  save.onclick = () => {
+    const d = recGet('word', key) || { w: key, phon: '', audio: '', defs: [], ctx: [], added: Date.now() };
+    if (e && !e.offline){ d.phon = e.phon; d.audio = e.audio; d.defs = e.defs; }
+    if (!d.ctx.some(x => x.vid === item.id && x.i === c.oi)) d.ctx.unshift({ vid: item.id, i: c.oi, text: c.text, title: itemName(item), t: Date.now() });
+    d.ctx = d.ctx.slice(0, 5);
+    recPut('word', key, d);
+    save.textContent = 'Guardada'; toast('"' + key + '" guardada nas tuas palavras.');
+  };
+  const hear = el('button', 'btn small', 'Ouvir a frase'); hear.type = 'button';
+  hear.onclick = () => { closeWord(); if (mode === 'watch'){ P && (P.seek(c.start), P.play()); } else goTo(i, true); };
+  row.append(save, hear);
+  pop.append(row);
+  placePop(anchor);
+}
+function placePop(anchor){
+  const pop = $('wpop'), r = anchor.getBoundingClientRect(), pw = pop.offsetWidth, ph = pop.offsetHeight;
+  let left = Math.min(Math.max(12, r.left + r.width / 2 - pw / 2), innerWidth - pw - 12);
+  let top = r.bottom + 8; if (top + ph > innerHeight - 12) top = Math.max(12, r.top - ph - 8);
+  pop.style.left = left + 'px'; pop.style.top = top + 'px';
+}
+function closeWord(){ $('wpop').hidden = true; wpopFor = null; }
+document.addEventListener('pointerdown', e => { if (!$('wpop').hidden && !$('wpop').contains(e.target) && !e.target.closest('.wd')) closeWord(); });
+$('tlist').addEventListener('scroll', closeWord, { passive: true });
+
+function renderWords(){
+  const q = cleanW($('wordSearch').value);
+  const list = $('wordList'); list.replaceChildren();
+  const words = recAll('word').filter(w => !q || w.w.includes(q)).sort((a, b) => (b.added || 0) - (a.added || 0));
+  if (!words.length){
+    const e = el('div', 'empty', q ? 'Nenhuma palavra encontrada.' : 'Ainda não guardaste palavras. Durante a prática, carrega numa palavra da transcrição e escolhe "Guardar palavra".');
+    list.append(e); return;
+  }
+  for (const w of words){
+    const card = el('article', 'wcard');
+    const head = el('header'); head.append(el('h3', '', w.w));
+    if (w.phon) head.append(el('span', 'ph', w.phon));
+    if (w.audio){ const b = el('button', 'btn small', 'Ouvir'); b.onclick = () => playAudio(w.audio); head.append(b); }
+    const del = el('button', 'del', 'Remover');
+    del.onclick = () => { if (del.dataset.armed){ recDel('word', w.id); renderWords(); return; } del.dataset.armed = 1; del.textContent = 'Carrega outra vez'; setTimeout(() => { if (del.isConnected){ delete del.dataset.armed; del.textContent = 'Remover'; } }, 3000); };
+    head.append(del);
+    card.append(head);
+    if (w.defs && w.defs.length){
+      const ol = el('ol', 'defs');
+      for (const d of w.defs){ const li = el('li'); li.append(el('i', '', POS[d.pos] || d.pos || ''), document.createTextNode(d.def)); ol.append(li); }
+      card.append(ol);
+    }
+    const ctx = el('div', 'ctx');
+    for (const c of w.ctx || []){
+      const row = el('div'); const txt = el('div'); txt.style.display = 'block';
+      txt.append(el('q', '', c.text), el('small', '', c.title));
+      row.append(txt);
+      const v = lib.find(x => x.id === c.vid);
+      if (v){ const b = el('button', 'btn small', 'Ouvir'); b.onclick = () => openItem(v, { at: c.i }); row.append(b); }
+      ctx.append(row);
+    }
+    card.append(ctx);
+    list.append(card);
+  }
+}
+$('wordSearch').addEventListener('input', renderWords);
+
+/* ============ Músicas ============ */
+function renderMusic(){
+  const box = $('musicList'); box.replaceChildren();
+  const songs = lib.filter(x => x.music);
+  if (!songs.length){
+    const e = el('div', 'panel empty-cta');
+    e.append(el('h2', '', 'Ainda não tens músicas'),
+      el('p', 'sub', 'Junta um clipe do YouTube ou um ficheiro de música do computador, cola a letra e escreve o que ouves. Aqui vês as músicas que já fizeste, por artista e álbum, com a percentagem de palavras certas.'));
+    const b = el('button', 'btn primary', 'Juntar a primeira música'); b.onclick = () => $('newMusicBtn').onclick();
+    e.append(b); box.append(e); return;
+  }
+  const artists = new Map();
+  for (const sg of songs){
+    const a = sg.music.artist || 'Sem artista', al = sg.music.album || '';
+    if (!artists.has(a)) artists.set(a, new Map());
+    const albums = artists.get(a); if (!albums.has(al)) albums.set(al, []);
+    albums.get(al).push(sg);
+  }
+  const coll = (x, y) => x.localeCompare(y, 'pt', { sensitivity: 'base' });
+  for (const a of [...artists.keys()].sort(coll)){
+    const sec = el('section', 'panel artist'); sec.append(el('h2', '', a));
+    const albums = artists.get(a);
+    const names = [...albums.keys()].sort((x, y) => (x === '') - (y === '') || coll(x, y));
+    for (const al of names){
+      const div = el('div', 'album');
+      if (names.length > 1 || al) div.append(el('h3', '', al || 'Outras músicas'));
+      const list = el('div', 'songs');
+      for (const sg of albums.get(al).sort((x, y) => coll(x.music.title, y.music.title))){
+        const total = parseAny(sg.subs).length;
+        const row = el('div', 'song-row');
+        const b = el('button', 'song');
+        const info = el('div'); info.append(el('b', '', sg.music.title));
+        const meta = el('div', 'meta');
+        const tries = (sg.music.attempts || []).length;
+        meta.append(el('span', '', tries ? tries + (tries === 1 ? ' vez concluída' : ' vezes concluída') : (total ? `${sg.prog.done.length}/${total} versos` : 'Falta marcar os tempos')));
+        if (sg.kind === 'audio') meta.append(el('span', '', 'Ficheiro do PC'));
+        meta.append(el('span', '', ago(sg.last)));
+        info.append(meta);
+        const sc = el('div', 'score');
+        sc.append(document.createTextNode(tries ? (sg.music.best || 0) + '%' : '–'), el('small', '', tries ? 'melhor resultado' : 'ainda por concluir'));
+        b.append(info, sc); b.onclick = () => openItem(sg);
+        const del = el('button', 'del', 'Remover');
+        del.onclick = () => { if (del.dataset.armed){ removeItem(sg); renderMusic(); return; } del.dataset.armed = 1; del.textContent = 'Carrega outra vez'; setTimeout(() => { if (del.isConnected){ delete del.dataset.armed; del.textContent = 'Remover'; } }, 3000); };
+        row.append(b, del); list.append(row);
+      }
+      div.append(list); sec.append(div);
+    }
+    box.append(sec);
+  }
+}
+$('newMusicBtn').onclick = () => { showView('home'); setKind('music'); $('impTitle').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+
+/* ============ Rever erros ============ */
+function whenText(t){
+  const d = t - Date.now();
+  if (d <= 0) return 'agora';
+  const h = Math.round(d / 3600000);
+  if (h < 24) return h <= 1 ? 'daqui a cerca de 1 hora' : `daqui a ${h} horas`;
+  const days = Math.round(d / DAY);
+  return days === 1 ? 'amanhã' : `daqui a ${days} dias`;
+}
+function renderReview(){
+  const box = $('reviewDue'); box.replaceChildren();
+  const all = recAll('card').filter(c => lib.some(v => v.id === c.vid));
+  const due = dueCards();
+  const training = all.filter(c => !c.mastered).length, mastered = all.filter(c => c.mastered).length;
+  if (due.length){
+    const vids = new Set(due.map(c => c.vid)).size;
+    box.append(el('p', 'due-big', due.length + (due.length === 1 ? ' frase para rever' : ' frases para rever')),
+      el('p', 'sub', `De ${vids} ${vids === 1 ? 'vídeo ou música' : 'vídeos e músicas'}. Ouves cada frase e escreves outra vez.`));
+    const b = el('button', 'btn primary', 'Começar a revisão'); b.onclick = startReview; box.append(b);
+  } else if (all.length){
+    const next = all.filter(c => !c.mastered).sort((a, b) => a.due - b.due)[0];
+    box.append(el('p', 'due-big', 'Nada para rever agora'),
+      el('p', 'sub', next ? `A próxima frase volta ${whenText(next.due)}.` : 'Dominaste todas as frases difíceis até agora.'));
+  } else {
+    box.append(el('p', 'due-big', 'Ainda não há frases para rever'),
+      el('p', 'sub', 'Quando errares uma palavra ou pedires uma dica, a frase aparece aqui para a treinares mais tarde.'));
+  }
+  if (all.length){
+    const sr = el('div', 'statrow');
+    const tile = (label, v) => { const t = el('div', 'stat'); t.append(el('small', '', label), el('b', '', v)); return t; };
+    sr.append(tile('Em treino', training), tile('Dominadas', mastered), tile('Para rever hoje', due.length));
+    box.append(sr);
+  }
+  const wc = {}, sc = {};
+  for (const c of recAll('card')){
+    for (const [w, n] of Object.entries(c.words || {})) wc[w] = (wc[w] || 0) + n;
+    for (const [k, n] of Object.entries(c.swaps || {})) sc[k] = (sc[k] || 0) + n;
+  }
+  const fill = (ol, entries, render, empty) => {
+    ol.replaceChildren();
+    if (!entries.length){ ol.append(el('li', '', empty)); return; }
+    for (const [k, n] of entries){ const li = el('li'); li.append(render(k), el('span', 'cnt', n + (n === 1 ? ' vez' : ' vezes'))); ol.append(li); }
+  };
+  const top = o => Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  fill($('repWords'), top(wc), k => el('span', 'w', k), 'Ainda sem dados.');
+  fill($('repSwaps'), top(sc), k => { const [e, t] = k.split('→'); const sp = el('span', 'w swap'); sp.append(el('span', 't', t), document.createTextNode(' em vez de '), el('span', 'e', e)); return sp; }, 'Ainda sem dados.');
+}
+
+/* ============ Progresso ============ */
+const MONTHS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+function fmtMin(sec){ const m = Math.round(sec / 60); if (sec > 0 && m === 0) return 'menos de 1 min'; return m < 60 ? m + ' min' : Math.floor(m / 60) + ' h ' + (m % 60) + ' min'; }
+function renderProgress(){
+  const byDay = {};
+  for (const a of recAll('activity')){ const d = byDay[a.day] || (byDay[a.day] = { s: 0, n: 0 }); d.s += a.s || 0; d.n += a.n || 0; }
+  const now = new Date(), monthKey = dayKey(now).slice(0, 7);
+  let mDays = 0, mSec = 0, totN = 0;
+  for (const [k, d] of Object.entries(byDay)){ totN += d.n; if (k.startsWith(monthKey) && (d.s > 0 || d.n > 0)){ mDays++; mSec += d.s; } }
+  const sr = $('actSummary'); sr.replaceChildren();
+  const tile = (label, v) => { const t = el('div', 'stat'); t.append(el('small', '', label), el('b', '', v)); return t; };
+  sr.append(tile('Dias com prática este mês', mDays), tile('Tempo este mês', fmtMin(mSec)), tile('Frases escritas (total)', totN));
+
+  // Calendário: 26 semanas, segunda a domingo
+  const heat = $('heatmap'), months = $('heatMonths'); heat.replaceChildren(); months.replaceChildren();
+  const start = new Date(now); start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() - ((start.getDay() + 6) % 7) - 25 * 7);
+  for (let w = 0; w < 26; w++){
+    const first = new Date(start); first.setDate(start.getDate() + w * 7);
+    const prev = new Date(first); prev.setDate(first.getDate() - 7);
+    const lab = el('span');
+    // nome do mês na primeira semana desse mês (e na 1.ª coluna só se houver espaço até ao mês seguinte)
+    const nextChange = new Date(first); nextChange.setDate(first.getDate() + 14);
+    if (w === 0 ? nextChange.getMonth() === first.getMonth() : prev.getMonth() !== first.getMonth()) lab.textContent = MONTHS[first.getMonth()];
+    months.append(lab);
+    for (let d = 0; d < 7; d++){
+      const day = new Date(first); day.setDate(first.getDate() + d);
+      const k = dayKey(day), v = byDay[k], i = el('i');
+      if (day > now){ i.className = 'out'; heat.append(i); continue; }
+      const min = v ? v.s / 60 : 0;
+      i.dataset.l = !v || (!v.s && !v.n) ? 0 : min < 5 ? 1 : min < 15 ? 2 : min < 30 ? 3 : 4;
+      if (k === dayKey(now)) i.classList.add('today');
+      i.title = `${day.getDate()} ${MONTHS[day.getMonth()]}: ` + (v ? `${fmtMin(v.s)}, ${v.n} frases` : 'sem prática');
+      heat.append(i);
+    }
+  }
+  const hw = heat.parentElement; hw.scrollLeft = hw.scrollWidth;
+
+  // Evolução
+  const sessions = recAll('session').filter(x => x.n > 0).sort((a, b) => a.t - b.t);
+  const weekOf = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d.getTime(); };
+  const weeks = new Map();
+  for (const x of sessions){ const k = weekOf(x.t); const w = weeks.get(k) || { n: 0, wpm: 0, acc: 0, wn: 0 }; w.n += x.n; w.acc += x.acc * x.n; if (x.wpm > 0){ w.wpm += x.wpm * x.n; w.wn += x.n; } weeks.set(k, w); }
+  const label = t => { const d = new Date(t); return d.getDate() + '/' + (d.getMonth() + 1); };
+  let ptsW, ptsA;
+  if (weeks.size >= 3){
+    const ks = [...weeks.keys()].sort((a, b) => a - b).slice(-12);
+    ptsW = ks.filter(k => weeks.get(k).wn).map(k => ({ x: label(k), v: Math.round(weeks.get(k).wpm / weeks.get(k).wn), tip: 'Semana de ' + label(k) }));
+    ptsA = ks.map(k => ({ x: label(k), v: Math.round(weeks.get(k).acc / weeks.get(k).n), tip: 'Semana de ' + label(k) }));
+  } else {
+    const last = sessions.slice(-20);
+    ptsW = last.filter(x => x.wpm > 0).map(x => ({ x: label(x.t), v: x.wpm, tip: x.title }));
+    ptsA = last.map(x => ({ x: label(x.t), v: x.acc, tip: x.title }));
+  }
+  lineChart($('chartWpm'), ptsW, { unit: ' ppm', min: 0 });
+  lineChart($('chartAcc'), ptsA, { unit: '%', max: 100 });
+
+  const sl = $('sessList'); sl.replaceChildren();
+  const recent = sessions.slice(-10).reverse();
+  if (!recent.length){ sl.append(el('p', 'hint', 'As tuas sessões de prática aparecem aqui.')); return; }
+  const KIND = { video: 'Vídeo', music: 'Música', review: 'Revisão' };
+  for (const x of recent){
+    const row = el('div', 'sess');
+    const a = el('div'); a.append(el('b', '', x.title));
+    const d = new Date(x.t);
+    a.append(el('div', 'hint', `${KIND[x.kind] || 'Vídeo'}, ${d.getDate()} ${MONTHS[d.getMonth()]} às ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}, ${x.s < 60 ? 'menos de 1 min' : fmtMin(x.s)}`));
+    const nums = el('div', 'nums');
+    nums.append(el('span', 'chip', x.n + (x.n === 1 ? ' frase' : ' frases')), el('span', 'chip', x.wpm + ' ppm'), el('span', 'chip', x.acc + '% precisão'), el('span', 'chip', x.words + '% palavras certas'));
+    row.append(a, nums); sl.append(row);
+  }
+}
+function lineChart(box, pts, o = {}){
+  box.replaceChildren();
+  if (pts.length < 2){ box.append(el('p', 'none', 'Precisas de pelo menos duas sessões para ver a evolução.')); return; }
+  const W = 560, H = 200, L = 40, R = 14, T = 14, B = 28;
+  const vals = pts.map(p => p.v);
+  let lo = o.min != null ? o.min : Math.max(0, Math.floor((Math.min(...vals) - 5) / 10) * 10);
+  let hi = o.max != null ? o.max : Math.ceil((Math.max(...vals) * 1.15) / 10) * 10 || 10;
+  if (o.max != null) lo = Math.min(lo, Math.max(0, Math.floor((Math.min(...vals) - 5) / 10) * 10));
+  if (hi <= lo) hi = lo + 10;
+  const x = i => L + (W - L - R) * (pts.length === 1 ? 0.5 : i / (pts.length - 1));
+  const y = v => T + (H - T - B) * (1 - (v - lo) / (hi - lo));
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'Evolução: ' + pts.map(p => p.x + ' ' + p.v + (o.unit || '')).join(', '));
+  const add = (tag, at, text) => { const e = document.createElementNS(ns, tag); for (const k in at) e.setAttribute(k, at[k]); if (text != null) e.textContent = text; svg.append(e); return e; };
+  for (const v of [lo, (lo + hi) / 2, hi]){ add('line', { class: 'gd', x1: L, x2: W - R, y1: y(v), y2: y(v) }); add('text', { class: 'ax', x: L - 6, y: y(v) + 4, 'text-anchor': 'end' }, Math.round(v)); }
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(p.v).toFixed(1)).join(' ');
+  add('path', { class: 'ar', d: d + ` L${x(pts.length - 1).toFixed(1)} ${H - B} L${x(0).toFixed(1)} ${H - B} Z` });
+  add('path', { class: 'ln', d });
+  pts.forEach((p, i) => { const c = add('circle', { class: 'pt', cx: x(i), cy: y(p.v), r: 4 }); const t = document.createElementNS(ns, 'title'); t.textContent = `${p.tip || p.x}: ${p.v}${o.unit || ''}`; c.append(t); });
+  const idxs = [...new Set([0, Math.floor((pts.length - 1) / 2), pts.length - 1])];
+  for (const i of idxs) add('text', { class: 'ax', x: x(i), y: H - 8, 'text-anchor': i === 0 ? 'start' : i === pts.length - 1 ? 'end' : 'middle' }, pts[i].x);
+  box.append(svg);
+}
 
 /* ============ Conta e sincronização (Supabase) ============ */
 const SB_URL = 'https://tjnukdtypjuggqvlqbzu.supabase.co';
@@ -1064,7 +1919,7 @@ async function syncNow(){
     // Este browser -> nuvem
     const ups = [];
     for (const it of lib){
-      if (it.kind !== 'yt') continue;
+      if (it.kind !== 'yt' && it.kind !== 'audio') continue;
       const r = remote.get(it.id);
       if (!r || (it.last || 0) > tsOf(r)) ups.push({ id: it.id, user_id: user.id, data: it, deleted: false, updated_at: new Date(it.last || Date.now()).toISOString() });
     }
@@ -1074,9 +1929,26 @@ async function syncNow(){
     }
     if (ups.length){ const { error: e2 } = await sb.from('videos').upsert(ups); if (e2) throw e2; }
 
+    // Registos (sessões, atividade, frases para rever, palavras)
+    const { data: rrows, error: e3 } = await sb.from('records').select('kind,id,data,updated_at,deleted');
+    if (e3) throw e3;
+    const rmap = new Map(rrows.map(r => [r.kind + '|' + r.id, r]));
+    for (const r of rrows){
+      if (!rec[r.kind]) continue;
+      const loc = rec[r.kind][r.id], rt = tsOf(r);
+      if (!loc || rt > loc.t) rec[r.kind][r.id] = r.deleted ? { d: null, t: rt, x: 1 } : { d: r.data, t: rt };
+    }
+    const rups = [];
+    for (const k of REC_KINDS) for (const [id, v] of Object.entries(rec[k])){
+      const r = rmap.get(k + '|' + id);
+      if (r ? v.t > tsOf(r) : !v.x) rups.push({ user_id: user.id, kind: k, id, data: v.x ? null : v.d, deleted: !!v.x, updated_at: new Date(v.t).toISOString() });
+    }
+    for (let i = 0; i < rups.length; i += 400){ const { error: e4 } = await sb.from('records').upsert(rups.slice(i, i + 400)); if (e4) throw e4; }
+    REC_KINDS.forEach(k => store.set('ecoa.rec.' + k, rec[k]));
+
     lib.sort((a, b) => (b.created || 0) - (a.created || 0));
     localSave(); saveTomb();
-    if (!$('home').hidden) renderLib();
+    refreshView();
     setSync('ok', 'Sincronizado às ' + new Date().toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }));
   } catch(e){
     console.error('Sincronização', e);
@@ -1124,13 +1996,13 @@ $('deleteAccBtn').onclick = async () => {
 
 /* Cópia de segurança em ficheiro */
 $('exportBtn').onclick = () => {
-  const data = { app: 'ecoa', version: 1, exported: new Date().toISOString(), lib, settings };
+  const data = { app: 'ecoa', version: 2, exported: new Date().toISOString(), lib, settings, rec };
   const url = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
   const a = document.createElement('a');
   a.href = url; a.download = 'ecoa-copia-' + new Date().toISOString().slice(0, 10) + '.json';
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  toast('Cópia exportada: ' + lib.length + ' vídeos.');
+  toast('Cópia exportada: ' + lib.length + ' vídeos e músicas. Os ficheiros de música do computador não entram na cópia.');
 };
 $('importFile').onchange = () => {
   const f = $('importFile').files[0]; if (!f) return;
@@ -1141,19 +2013,24 @@ $('importFile').onchange = () => {
     if (!d || d.app !== 'ecoa' || !Array.isArray(d.lib)){ $('accErr').textContent = 'Este ficheiro não é uma cópia do ecoa.'; return; }
     let added = 0, updated = 0;
     for (const it of d.lib){
-      if (!it || !it.id || it.kind !== 'yt') continue;
+      if (!it || !it.id || (it.kind !== 'yt' && it.kind !== 'audio')) continue;
       const i = lib.findIndex(x => x.id === it.id);
       if (i < 0){ lib.push(it); added++; delete tomb[it.id]; }
       else if ((it.last || 0) > (lib[i].last || 0)){ lib[i] = it; updated++; }
     }
+    if (d.rec) for (const k of REC_KINDS){
+      for (const [id, v] of Object.entries(d.rec[k] || {})){ if (v && (!rec[k][id] || v.t > rec[k][id].t)) rec[k][id] = v; }
+      store.set('ecoa.rec.' + k, rec[k]);
+    }
     lib.sort((a, b) => (b.created || 0) - (a.created || 0));
-    saveTomb(); saveLib(); renderLib();
-    toast(`Cópia importada: ${added} vídeos novos, ${updated} atualizados.`);
+    saveTomb(); saveLib(); refreshView();
+    toast(`Cópia importada: ${added} vídeos e músicas novos, ${updated} atualizados.`);
   };
   r.readAsText(f);
 };
 
 initSupabase();
+{ const h = location.hash.slice(1); showView(h && !h.includes('=') ? h : 'home'); }
 </script>
 </body>
 </html>

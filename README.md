@@ -7,11 +7,13 @@ Pratica escrita e compreensão oral a escrever as legendas de vídeos do YouTube
 ## Funções
 
 - **Três modos:** Escrever junto (o vídeo pausa em cada frase), Ditado (legendas escondidas, com dicas) e Ver (vídeo seguido, legendas duplas e transcrição clicável).
-- **Legendas:** ficheiros `.srt` ou `.vtt`, ou a transcrição copiada do YouTube ("Mostrar transcrição").
-- **Legendas duplas:** um segundo ficheiro com a tradução.
-- **Biblioteca** com progresso, palavras por minuto, precisão e último acesso.
-- Velocidade do vídeo, repetição em ciclo, ignorar maiúsculas e pontuação, tema claro e escuro.
-- **App instalável (PWA):** abre sem internet. Os vídeos do YouTube continuam a precisar de internet.
+- **Legendas:** ficheiros `.srt` ou `.vtt`, ou a transcrição copiada do YouTube. A app explica passo a passo onde as encontrar.
+- **Músicas:** clipes do YouTube ou ficheiros de música do computador, com letra `.lrc` ou colada. Se a letra não tiver tempos, a app ajuda a marcá-los. Organizadas por artista e álbum, com a percentagem de palavras certas.
+- **Rever erros:** as frases em que erraste voltam com repetição espaçada (1, 3, 7, 14 e 30 dias). Relatório das palavras que mais falhas e das trocas mais frequentes.
+- **Palavras:** carrega numa palavra da transcrição para ver o significado (inglês, via dictionaryapi.dev) e guardá-la com a frase onde a ouviste.
+- **Progresso:** calendário dos dias em que praticaste e gráficos de palavras por minuto e precisão. Sem metas nem contagem de dias seguidos.
+- **Conta opcional (Supabase):** login por link no email e sincronização entre dispositivos. Sem conta, tudo fica no browser.
+- **Cópia de segurança** em ficheiro, tema claro e escuro, app instalável (PWA).
 
 ## Estrutura
 
@@ -19,6 +21,8 @@ Pratica escrita e compreensão oral a escrever as legendas de vídeos do YouTube
 index.html             a app inteira (HTML, CSS e JavaScript)
 manifest.webmanifest   dados para instalar como app
 sw.js                  service worker (modo offline)
+privacidade.html       política de privacidade
+supabase/schema.sql    tabelas e regras de segurança da base de dados
 icons/                 ícones da app
 vercel.json            cabeçalhos e configuração do Vercel
 ```
